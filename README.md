@@ -1,26 +1,30 @@
-# 🧠 Transfondo y Enfoque: El Proyecto como una Arquitectura de Red
+# 🌿 Ramificaciones Tecnológicas del Proyecto Base
 
-> **¿Por qué modelar un proyecto productivo bajo conceptos de redes (Routers, Switches, Enrutamiento)?**
-> Un proyecto no es una lista estática de tareas en papel; es un **sistema vivo y dinámico** donde los recursos, la información, el dinero y las decisiones deben viajar de un punto a otro con eficiencia, sin cuellos de botella y con tolerancia a fallos. 
-
----
-
-### 🌐 1. El Transfondo (Filosofía del Sistema)
-En ingeniería de redes, si un nodo falla o un paquete se corrompe, todo el sistema se degrada a menos que existan protocolos de respaldo y enrutamiento inteligente. 
-
-En nuestro **Proyecto Productivo SENA**, aplicamos este mismo principio:
-* **El Tráfico de Datos son los Recursos:** El tiempo, el dinero, el talento humano y los insumos materiales actúan como "paquetes de datos" que deben ser enrutados correctamente desde el origen (Problema/Solución) hasta su destino final (Impacto y Sostenibilidad).
-* **Sin Pérdida de Paquetes:** Cada capa actúa como un buffer o filtro. Si el *Modelo Operativo* falla, el *Modelo Financiero* o la *Gestión de Riesgos* detectan la latencia y reconfiguran el flujo antes de que el proyecto colapse.
+> **Arquitectura Central:** A partir de los 9 bloques troncales del proyecto productivo, el sistema se divide en tres ramas de especialización tecnológica según el enfoque técnico que se requiera implementar.
 
 ---
 
-### ⚡ 2. El Enfoque Tecnológico y Operativo
-El enfoque de este repositorio se divide en cuatro pilares de red aplicados al emprendimiento:
-
-1. **Enrutamiento (Routing):** Decisiones estratégicas. Define por dónde viaja la solución para conectar de manera óptima con el mercado meta, evitando rutas redundantes o ineficientes.
-2. **Conmutación (Switching):** Distribución interna. Conecta dinámicamente las operaciones diarias con el equipo de trabajo y la estructura organizacional, asegurando que cada bloque reciba los insumos exactos cuando los necesita.
-3. **Ancho de Banda (Capacidad Financiera):** Controla el flujo de capital y costos. Si el ancho de banda financiero es bajo, el sistema se satura; por ello, el *Modelo Financiero* regula la velocidad y estabilidad del proyecto.
-4. **Seguridad y QoS (Quality of Service - Gestión de Riesgos):** Implementa "firewalls" (controles y planes de mitigación) para proteger al sistema contra ataques externos, volatilidad del mercado o fallas técnicas, garantizando la continuidad del negocio.
+## 🌐 Rama 1: Infraestructura de Redes y Telecomunicaciones
+* **Enfoque:** Conectividad, topología, enrutamiento de recursos y simulación de flujos de datos.
+* **Aplicación en los bloques:** 
+  * Los bloques actúan como nodos interconectados (Routers y Switches).
+  * El tráfico de datos representa el flujo de insumos, capital, tiempos e información operativa.
+  * Se enfoca en la baja latencia, tolerancia a fallos, calidad de servicio (QoS) y seguridad frente a cuellos de botella operativos.
 
 ---
-*💡 **Conclusión del Enfoque:** Este repositorio no solo documenta un proyecto, sino que diseña una **topología escalable** lista para ser ejecutada y escalada con estándares de ingeniería.*
+
+## 📡 Rama 2: Streaming y Transmisión de Contenido
+* **Enfoque:** Arquitectura de distribución multimedia, baja latencia de video, protocolos de transporte y entrega de contenidos en tiempo real.
+* **Aplicación en los bloques:**
+  * **Problema/Solución & Comercial:** Identifican la necesidad de distribuir contenido audiovisual interactivo o educativo a los usuarios finales.
+  * **Modelo Operativo:** Define la infraestructura de servidores de streaming (CDN, codificadores, transcodificación en la nube).
+  * **Modelo Financiero & Riesgos:** Calculan costos de ancho de banda, almacenamiento y mitigación de interrupciones o pérdida de paquetes durante transmisiones masivas.
+
+---
+
+## 👁️ Rama 3: Visión Artificial con YOLOv8
+* **Enfoque:** Procesamiento de imágenes en tiempo real, detección de objetos, automatización inteligente y analítica visual.
+* **Aplicación en los bloques:**
+  * **Modelo Operativo:** Se integra como el núcleo inteligente de automatización (por ejemplo, control de calidad visual en líneas de producción, conteo de personas o monitoreo automatizado de espacios).
+  * **Arquitectura Organizacional:** Reduce la carga operativa humana al delegar tareas repetitivas de supervisión al modelo de inteligencia artificial.
+  * **Evaluación de Impacto:** Mide la eficiencia, precisión métrica (mAP) y el rendimiento optimizado del sistema implementado con YOLOv8.

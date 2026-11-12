@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO - Mapa Conceptual Interactivo</title>
+    <!-- Librería Vis.js para generar el grafo interactivo -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #1e293b;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #38bdf8;
+        }
+        #network-container {
+            width: 100%;
+            height: calc(100vh - 80px);
+            background-color: #0f172a;
+        }
+    </style>
+</head>
+<body>
 
+<header>
+    <h1>FUNDAMENTOS: YOLO (YOU ONLY LOOK ONCE)</h1>
+</header>
+
+<div id="network-container"></div>
+
+<script>
+    // Definir los nodos del flujo de arquitectura YOLO
+    const nodes = new vis.DataSet([
+        { id: 1, label: "🖼️ IMAGEN DE ENTRADA\nCaptura o cuadro de video\ncon objetos a detectar", group: "io" },
+        { id: 2, label: "🧠 RED NEURONAL CONVOLUCIONAL (CNN)\nExtracción de características\nEvaluación en una sola pasada (Single Pass)", group: "core" },
+        { id: 3, label: "▦ DIVISIÓN EN REJILLA\nDivide la imagen en celdas\n(Ej. cuadrícula S x S)", group: "process" },
+        { id: 4, label: "📦 PREDICCIÓN DE CAJAS\nBounding Boxes (coordenadas)\ny Objectness Score (confianza)", group: "process" },
+        { id: 5, label: "🏷️ PREDICCIÓN DE CLASES\nProbabilidad de categoría por celda\n(Ej. Persona, Auto, Perro)", group: "core" },
+        { id: 6, label: "✂️ SUPRESIÓN NO MÁXIMA (NMS)\nFiltra cajas redundantes\ny conserva la mejor detección", group: "core" },
+        { id: 7, label: "✅ RESULTADO FINAL\nDetección en tiempo real\nArquitectura unificada y rápida", group: "io" }
+    ]);
+
+    // Definir las conexiones del flujo
+    const edges = new vis.DataSet([
+        { from: 1, to: 2, arrows: 'to', color: { color: '#38bdf8' } },
+        { from: 2, to: 3, arrows: 'to' },
+        { from: 2, to: 4, arrows: 'to' },
+        { from: 3, to: 5, arrows: 'to' },
+        { from: 4, to: 5, arrows: 'to' },
+        { from: 5, to: 6, arrows: 'to' },
+        { from: 6, to: 7, arrows: 'to', color: { color: '#38bdf8' } }
+    ]);
+
+    const container = document.getElementById('network-container');
+    const data = { nodes: nodes, edges: edges };
+    
+    const options = {
+        nodes: {
+            shape: 'box',
+            margin: 14,
+            widthConstraint: { maximum: 260 },
+            font: { size: 14, color: '#ffffff', multi: true },
+            borderWidth: 2,
+            shadow: true
+        },
+        edges: {
+            width: 2,
+            color: { color: '#64748b' },
+            smooth: { type: 'cubicBezier' }
+        },
+        groups: {
+            io: {
+                color: { background: '#0f2942', border: '#38bdf8', highlight: { background: '#1e3a5f', border: '#7dd3fc' } }
+            },
+            core: {
+                color: { background: '#1e293b', border: '#0284c7', highlight: { background: '#334155', border: '#38bdf8' } }
+            },
+            process: {
+                color: { background: '#1e1b4b', border: '#6366f1', highlight: { background: '#312e81', border: '#818cf8' } }
+            }
+        },
+        physics: {
+            enabled: false
+        },
+        layout: {
+            hierarchical: {
+                direction: 'DOWN',
+                sortMethod: 'directed',
+                nodeSpacing: 160,
+                levelSeparation: 100
+            }
+        }
+    };
+
+    const network = new vis.Network(container, data, options);
+</script>
+
+</body>
+</html>

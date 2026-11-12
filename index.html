@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelo OSI - Mapa Conceptual Interactivo</title>
+    <!-- Librería Vis.js para generar el grafo interactivo -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #1e293b;
+            border-bottom: 2px solid #334155;
+        }
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #38bdf8;
+        }
+        #network-container {
+            width: 100%;
+            height: calc(100vh - 80px);
+            background-color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>FUNDAMENTOS: MODELO OSI (7 CAPAS)</h1>
+</header>
+
+<div id="network-container"></div>
+
+<script>
+    // Definir los nodos del modelo OSI en orden jerárquico
+    const nodes = new vis.DataSet([
+        { id: 7, label: "CAPA 7: APLICACIÓN\nServicios a usuario\nHTTP, FTP, SMTP, DNS", group: "osi" },
+        { id: 6, label: "CAPA 6: PRESENTACIÓN\nFormato, cifrado, compresión\nJPEG, MPEG, SSL/TLS", group: "osi" },
+        { id: 5, label: "CAPA 5: SESIÓN\nControl de diálogo\nNetBIOS, PPTP", group: "osi" },
+        { id: 4, label: "CAPA 4: TRANSPORTE\nExtremo a extremo, flujo\nTCP, UDP", group: "osi" },
+        { id: 3, label: "CAPA 3: RED\nEnrutamiento, direccionamiento\nIP, ICMP, Routers", group: "osi" },
+        { id: 2, label: "CAPA 2: ENLACE DE DATOS\nDirección física, tramas\nEthernet, Wi-Fi, Switches", group: "osi" },
+        { id: 1, label: "CAPA 1: FÍSICA\nMedio físico, bits\nCables, Hubs", group: "osi" },
+        
+        // Indicadores de datos
+        { id: 100, label: "📦 DATOS", group: "data" },
+        { id: 101, label: "⚡ BITS", group: "data" }
+    ]);
+
+    // Definir las conexiones entre las capas
+    const edges = new vis.DataSet([
+        { from: 100, to: 7, arrows: 'to', color: { color: '#38bdf8' } },
+        { from: 7, to: 6, arrows: 'to' },
+        { from: 6, to: 5, arrows: 'to' },
+        { from: 5, to: 4, arrows: 'to' },
+        { from: 4, to: 3, arrows: 'to' },
+        { from: 3, to: 2, arrows: 'to' },
+        { from: 2, to: 1, arrows: 'to' },
+        { from: 1, to: 101, arrows: 'to', color: { color: '#38bdf8' } }
+    ]);
+
+    const container = document.getElementById('network-container');
+    const data = { nodes: nodes, edges: edges };
+    
+    const options = {
+        nodes: {
+            shape: 'box',
+            margin: 14,
+            widthConstraint: { maximum: 250 },
+            font: { size: 14, color: '#ffffff', multi: true },
+            borderWidth: 2,
+            shadow: true
+        },
+        edges: {
+            width: 2,
+            color: { color: '#64748b' },
+            smooth: { type: 'cubicBezier' }
+        },
+        groups: {
+            osi: {
+                color: { background: '#1e293b', border: '#0284c7', highlight: { background: '#334155', border: '#38bdf8' } }
+            },
+            data: {
+                shape: 'text',
+                font: { size: 18, color: '#38bdf8', face: 'Arial' }
+            }
+        },
+        physics: {
+            enabled: false
+        },
+        layout: {
+            hierarchical: {
+                direction: 'DOWN',
+                sortMethod: 'directed',
+                nodeSpacing: 120,
+                levelSeparation: 90
+            }
+        }
+    };
+
+    const network = new vis.Network(container, data, options);
+</script>
+
+</body>
+</html>

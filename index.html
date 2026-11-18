@@ -1,51 +1,912 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapas Conceptuales - Fundamentos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #0f172a;
-            color: #ffffff;
-            text-align: center;
-            padding: 50px;
-        }
-        h1 { color: #38bdf8; }
-        .menu {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 400px;
-            margin: 40px auto;
-        }
-        a {
-            background-color: #1e293b;
-            color: #38bdf8;
-            padding: 15px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 18px;
-            border: 1px solid #334155;
-            transition: 0.3s;
-        }
-        a:hover {
-            background-color: #334155;
-            border-color: #38bdf8;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulación YOLOv8n + QoS en Red</title>
+  <!-- Carga de Tailwind CSS para estructura y responsividad -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fuentes técnicas y limpias -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-app: #f7f8f7;
+      --bg-panel: #e4e7e5;
+      --bg-card: #ffffff;
+      --border-subtle: #d1d6d3;
+      --forest-green: #1b7a68;
+      --forest-green-dark: #145c4e;
+      --amber-yolo: #b46514;
+      --amber-packet: #c96a0b;
+      --text-main: #1f2926;
+      --text-muted: #52605b;
+      --drop-red: #b91c1c;
+    }
+
+    body {
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-mono-tech {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .panel-box {
+      background-color: var(--bg-panel);
+      border-radius: 14px;
+      border: 1px solid #d8dcd9;
+    }
+
+    /* Estilo personalizado para los selects */
+    .tech-select {
+      appearance: none;
+      background-color: #ffffff;
+      border: 1.5px solid #cbd2ce;
+      border-radius: 10px;
+      padding: 0.45rem 2.2rem 0.45rem 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1f2926;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%231f2926' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.65rem center;
+      background-size: 14px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .tech-select:focus {
+      outline: none;
+      border-color: var(--forest-green);
+      box-shadow: 0 0 0 3px rgba(27, 122, 104, 0.15);
+    }
+
+    /* Estilo personalizado para el Range Slider */
+    input[type="range"].tech-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid #c3cac6;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"].tech-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--forest-green);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.1s ease, background-color 0.15s ease;
+    }
+
+    input[type="range"].tech-slider::-webkit-slider-thumb:hover {
+      background: var(--forest-green-dark);
+      transform: scale(1.08);
+    }
+
+    input[type="range"].tech-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--forest-green);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+
+    /* Animación punto EN VIVO */
+    @keyframes pulse-live {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.9); }
+    }
+
+    .live-dot {
+      animation: pulse-live 1.4s infinite ease-in-out;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
-<body>
+<body class="p-3 sm:p-5 md:p-6">
 
-    <h1>Mapas Conceptuales Interactivos</h1>
-    <p>Selecciona el tema que deseas visualizar:</p>
+  <!-- Contenedor Principal Responsive -->
+  <main class="max-w-6xl mx-auto flex flex-col gap-4">
 
-    <div class="menu">
-        <a href="osi.html">🌐 Modelo OSI (7 Capas)</a>
-        <a href="yolo.html">👁️ YOLO (You Only Look Once)</a>
-        <a href="streaming.html">📹 Streaming de Video</a>
-    </div>
+    <!-- 1. PANEL SUPERIOR DE CONTROLES -->
+    <section class="panel-box p-4 sm:p-5 shadow-sm" aria-label="Controles de simulación">
+      <div class="flex flex-wrap items-end gap-x-6 gap-y-4">
+        
+        <!-- Resolución -->
+        <div class="flex flex-col gap-1.5">
+          <label for="ctrl-res" class="text-xs sm:text-sm font-semibold text-[#2d3834]">Resolución</label>
+          <select id="ctrl-res" class="tech-select">
+            <option value="640x360">640×360</option>
+            <option value="1280x720" selected>1280×720</option>
+            <option value="1920x1080">1920×1080</option>
+            <option value="3840x2160">3840×2160</option>
+          </select>
+        </div>
 
+        <!-- FPS -->
+        <div class="flex flex-col gap-1.5">
+          <label for="ctrl-fps" class="text-xs sm:text-sm font-semibold text-[#2d3834]">FPS</label>
+          <select id="ctrl-fps" class="tech-select">
+            <option value="15">15</option>
+            <option value="30" selected>30</option>
+            <option value="60">60</option>
+          </select>
+        </div>
+
+        <!-- Códec -->
+        <div class="flex flex-col gap-1.5">
+          <label for="ctrl-codec" class="text-xs sm:text-sm font-semibold text-[#2d3834]">Códec</label>
+          <select id="ctrl-codec" class="tech-select">
+            <option value="H.264" selected>H.264</option>
+            <option value="H.265">H.265</option>
+            <option value="MJPEG">MJPEG</option>
+          </select>
+        </div>
+
+        <!-- QoS para video -->
+        <div class="flex flex-col gap-1.5">
+          <label for="ctrl-qos" class="text-xs sm:text-sm font-semibold text-[#2d3834]">QoS para video</label>
+          <select id="ctrl-qos" class="tech-select">
+            <option value="CS0">Best Effort (CS0)</option>
+            <option value="AF41" selected>DSCP AF41</option>
+            <option value="EF">DSCP EF (Prioridad máxima)</option>
+          </select>
+        </div>
+
+        <!-- Tráfico de otros equipos (Slider) -->
+        <div class="flex flex-col gap-2 min-w-[210px] sm:min-w-[240px] flex-grow sm:flex-grow-0 pb-1">
+          <div class="flex justify-between items-center">
+            <label for="ctrl-traffic" class="text-xs sm:text-sm font-semibold text-[#2d3834]">
+              Tráfico de otros equipos: <span id="label-traffic-val" class="font-mono-tech font-bold text-[#1f2926]">40 %</span>
+            </label>
+          </div>
+          <input id="ctrl-traffic" type="range" min="0" max="100" value="40" class="tech-slider" />
+        </div>
+
+      </div>
+
+      <!-- Segunda fila del panel superior: Enlace router + indicador técnico discreto -->
+      <div class="mt-4 pt-3 border-t border-[#d4d9d6] flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label for="ctrl-link" class="text-xs sm:text-sm font-semibold text-[#2d3834]">Enlace router</label>
+          <select id="ctrl-link" class="tech-select">
+            <option value="10">10 Mbps</option>
+            <option value="20" selected>20 Mbps</option>
+            <option value="50">50 Mbps</option>
+            <option value="100">100 Mbps</option>
+          </select>
+        </div>
+
+        <!-- Resumen dinámico de tasa de bits de video -->
+        <div class="flex flex-wrap items-center gap-3 text-xs font-mono-tech text-[#46544f] bg-white/75 px-3 py-2 rounded-lg border border-[#d1d6d3]">
+          <span>Bitrate video: <strong id="stat-video-mbps" class="text-[#b46514]">4.2 Mbps</strong></span>
+          <span class="text-[#b8c0bc]">|</span>
+          <span>Carga enlace: <strong id="stat-utilization" class="text-[#1b7a68]">61%</strong></span>
+          <span class="text-[#b8c0bc]">|</span>
+          <span>Pérdida video: <strong id="stat-loss" class="text-[#1f2926]">0.0%</strong></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. SECCIÓN CENTRAL: DOS CANVAS LADO A LADO -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+      <!-- PANEL IZQUIERDO: 1-5 · CÁMARA + YOLOV8N -->
+      <div class="panel-box p-4 flex flex-col gap-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <h2 class="font-mono-tech text-xs sm:text-sm tracking-wider uppercase font-semibold text-[#47544f]">
+            1-5 · CÁMARA + YOLOV8N
+          </h2>
+        </div>
+
+        <!-- Contenedor relativo del Canvas con overlays superiores -->
+        <div class="relative w-full h-[250px] sm:h-[270px] rounded-xl overflow-hidden bg-[#eaedeb] border border-[#d5dad7]">
+          <!-- Badge contador personas -->
+          <div class="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-md shadow-2xs border border-[#dce0de]">
+            <span class="font-mono-tech text-xs sm:text-sm font-semibold text-[#1f2926]">
+              personas: <span id="cam-person-count">2</span>
+            </span>
+          </div>
+
+          <!-- Badge EN VIVO -->
+          <div class="absolute top-3 right-3 z-10 flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#eaedeb]/80">
+            <span class="font-mono-tech text-xs font-bold tracking-wider text-[#2d3834]">EN VIVO</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#b91c1c] inline-block live-dot"></span>
+          </div>
+
+          <canvas id="canvas-camera"></canvas>
+        </div>
+      </div>
+
+      <!-- PANEL DERECHO: 9 · LO QUE VE EL CLIENTE -->
+      <div class="panel-box p-4 flex flex-col gap-3 shadow-sm">
+        <div class="flex items-center justify-between">
+          <h2 class="font-mono-tech text-xs sm:text-sm tracking-wider uppercase font-semibold text-[#47544f]">
+            9 · LO QUE VE EL CLIENTE
+          </h2>
+        </div>
+
+        <!-- Contenedor relativo del Canvas Cliente -->
+        <div class="relative w-full h-[250px] sm:h-[270px] rounded-xl overflow-hidden bg-[#eaedeb] border border-[#d5dad7]">
+          <!-- Badge contador personas cliente -->
+          <div class="absolute top-3 left-3 z-10 bg-white/95 backdrop-blur-xs px-3 py-1.5 rounded-md shadow-2xs border border-[#dce0de]">
+            <span class="font-mono-tech text-xs sm:text-sm font-semibold text-[#1f2926]">
+              personas: <span id="client-person-count">2</span>
+            </span>
+          </div>
+
+          <!-- Badge retardo en ms -->
+          <div id="delay-badge" class="absolute top-3 right-3 z-10 bg-white/95 backdrop-blur-xs px-3.5 py-1.5 rounded-md shadow-2xs border border-[#dce0de] transition-colors">
+            <span class="font-mono-tech text-xs sm:text-sm font-semibold text-[#1f2926]">
+              retardo <span id="client-delay-ms">112</span> ms
+            </span>
+          </div>
+
+          <!-- Aviso discreto si hay alta congestión / tartamudeo -->
+          <div id="client-warning" class="hidden absolute bottom-3 right-3 z-10 bg-[#b91c1c]/90 text-white px-2.5 py-1 rounded text-[11px] font-mono-tech">
+            congestión · pérdida de frames
+          </div>
+
+          <canvas id="canvas-client"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. SECCIÓN INFERIOR: 6-8 · RED: SERVIDOR -> SWITCH -> ROUTER -> CLIENTE -->
+    <section class="panel-box p-4 flex flex-col gap-2 shadow-sm">
+      <div class="flex items-center justify-between">
+        <h2 class="font-mono-tech text-xs sm:text-sm tracking-wider uppercase font-semibold text-[#47544f]">
+          6-8 · RED: SERVIDOR → SWITCH → ROUTER → CLIENTE
+        </h2>
+      </div>
+
+      <!-- Canvas de topología de red y paquetes -->
+      <div class="w-full h-[145px] sm:h-[155px] relative">
+        <canvas id="canvas-network"></canvas>
+      </div>
+
+      <!-- Leyenda inferior y estado de cola del router -->
+      <div class="pt-1 flex flex-wrap items-center justify-between gap-3 text-xs font-mono-tech text-[#3d4a45]">
+        <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#c96a0b] inline-block"></span>
+            <span>paquete de video</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#4a5753] inline-block"></span>
+            <span>otro tráfico</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#b91c1c] inline-block"></span>
+            <span>descartado en la cola del router</span>
+          </div>
+        </div>
+
+        <div class="ml-auto font-semibold text-[#2d3834]">
+          cola del router: <span id="router-queue-ms">0</span> ms
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /**
+     * SIMULACIÓN INTERACTIVA DE TRANSMISIÓN YOLOV8N CON QOS EN RED
+     * - Escena YOLOv8n con detección en tiempo real (Cámara)
+     * - Buffer temporal con retardo dinámico real y caída de frames (Cliente)
+     * - Simulación de paquetes en topología Servidor -> Switch -> Router -> Cliente
+     */
+    (function () {
+      // Referencias a elementos DOM
+      const elRes = document.getElementById('ctrl-res');
+      const elFps = document.getElementById('ctrl-fps');
+      const elCodec = document.getElementById('ctrl-codec');
+      const elQos = document.getElementById('ctrl-qos');
+      const elTraffic = document.getElementById('ctrl-traffic');
+      const elLink = document.getElementById('ctrl-link');
+
+      const labelTrafficVal = document.getElementById('label-traffic-val');
+      const statVideoMbps = document.getElementById('stat-video-mbps');
+      const statUtilization = document.getElementById('stat-utilization');
+      const statLoss = document.getElementById('stat-loss');
+
+      const camPersonCount = document.getElementById('cam-person-count');
+      const clientPersonCount = document.getElementById('client-person-count');
+      const clientDelayMs = document.getElementById('client-delay-ms');
+      const clientWarning = document.getElementById('client-warning');
+      const delayBadge = document.getElementById('delay-badge');
+      const routerQueueMs = document.getElementById('router-queue-ms');
+
+      const canvasCam = document.getElementById('canvas-camera');
+      const canvasClient = document.getElementById('canvas-client');
+      const canvasNet = document.getElementById('canvas-network');
+
+      const ctxCam = canvasCam.getContext('2d');
+      const ctxClient = canvasClient.getContext('2d');
+      const ctxNet = canvasNet.getContext('2d');
+
+      // Estado de parámetros de red y video
+      const state = {
+        resolution: '1280x720',
+        fps: 30,
+        codec: 'H.264',
+        qos: 'AF41',
+        otherTrafficPct: 40,
+        routerLinkMbps: 20,
+        // Métricas calculadas
+        videoMbps: 4.2,
+        otherMbps: 8.0,
+        totalDemandMbps: 12.2,
+        utilizationPct: 61,
+        queueDelayMs: 0,
+        totalLatencyMs: 112,
+        videoPacketLoss: 0,
+        otherPacketLoss: 0
+      };
+
+      // Actualiza el relleno visual de la barra deslizante
+      function updateSliderFill() {
+        const val = Number(elTraffic.value);
+        labelTrafficVal.textContent = `${val} %`;
+        elTraffic.style.background = `linear-gradient(to right, #1b7a68 0%, #1b7a68 ${val}%, #ffffff ${val}%, #ffffff 100%)`;
+      }
+
+      // Cálculo realista de ancho de banda, retardo en cola y pérdidas según QoS
+      function recalculateNetworkMetrics() {
+        state.resolution = elRes.value;
+        state.fps = Number(elFps.value);
+        state.codec = elCodec.value;
+        state.qos = elQos.value;
+        state.otherTrafficPct = Number(elTraffic.value);
+        state.routerLinkMbps = Number(elLink.value);
+
+        // Bitrate base por resolución a 30 FPS en H.264 (en Mbps)
+        const resBaseMap = {
+          '640x360': 1.4,
+          '1280x720': 4.2,
+          '1920x1080': 8.5,
+          '3840x2160': 22.0
+        };
+
+        // Factor por códec
+        const codecFactorMap = {
+          'H.264': 1.0,
+          'H.265': 0.62,
+          'MJPEG': 3.4
+        };
+
+        // Factor por FPS
+        const fpsFactor = state.fps / 30;
+
+        const videoMbps = resBaseMap[state.resolution] * codecFactorMap[state.codec] * fpsFactor;
+        // El tráfico de otros equipos escala proporcionalmente a la capacidad del enlace (hasta 115% de saturación posible)
+        const otherMbps = (state.otherTrafficPct / 100) * (state.routerLinkMbps * 1.1);
+        const totalDemand = videoMbps + otherMbps;
+        const utilization = (totalDemand / state.routerLinkMbps) * 100;
+
+        // Cálculo de cola del router y pérdidas según QoS
+        let queueMs = 0;
+        let vLoss = 0;
+        let oLoss = 0;
+
+        if (utilization > 72) {
+          const excessRatio = (utilization - 72) / 28; // > 0 cuando empieza a llenarse el buffer
+          if (state.qos === 'EF') {
+            // Prioridad estricta (LLQ): el video pasa primero, casi sin cola
+            queueMs = Math.min(45, Math.round(Math.pow(excessRatio, 1.3) * 18));
+            if (utilization > 100) {
+              const overflowMbps = totalDemand - state.routerLinkMbps;
+              // Primero se descarta todo el tráfico externo
+              oLoss = Math.min(1, overflowMbps / Math.max(0.1, otherMbps));
+              const remainingOverflow = Math.max(0, overflowMbps - otherMbps);
+              vLoss = Math.min(0.85, remainingOverflow / Math.max(0.1, videoMbps));
+            }
+          } else if (state.qos === 'AF41') {
+            // Assured Forwarding: reserva ancho de banda garantizado y baja latencia para video
+            queueMs = Math.min(180, Math.round(Math.pow(excessRatio, 1.5) * 55));
+            if (utilization > 100) {
+              const overflowMbps = totalDemand - state.routerLinkMbps;
+              // 85% del descarte cae sobre tráfico Best Effort, 15% sobre video si es extremo
+              oLoss = Math.min(0.95, (overflowMbps * 0.88) / Math.max(0.1, otherMbps));
+              const residual = Math.max(0, overflowMbps - oLoss * otherMbps);
+              vLoss = Math.min(0.8, residual / Math.max(0.1, videoMbps));
+            }
+          } else {
+            // Best Effort (CS0): FIFO compartido, la cola crece rápido y descarta por igual
+            queueMs = Math.min(650, Math.round(Math.pow(excessRatio, 1.7) * 190));
+            if (utilization > 100) {
+              const overflowRatio = (totalDemand - state.routerLinkMbps) / totalDemand;
+              vLoss = Math.min(0.9, overflowRatio * 1.15);
+              oLoss = Math.min(0.9, overflowRatio * 1.15);
+            }
+          }
+        }
+
+        // Latencia base de procesamiento YOLOv8n + serialización + red + cola del router
+        const inferenceMs = state.resolution === '3840x2160' ? 42 : state.resolution === '1920x1080' ? 28 : 18;
+        const propagationBase = 32 + Math.round((videoMbps / state.routerLinkMbps) * 25);
+        const totalDelay = inferenceMs + propagationBase + queueMs;
+
+        state.videoMbps = videoMbps;
+        state.otherMbps = otherMbps;
+        state.totalDemandMbps = totalDemand;
+        state.utilizationPct = Math.round(utilization);
+        state.queueDelayMs = queueMs;
+        state.totalLatencyMs = totalDelay;
+        state.videoPacketLoss = vLoss;
+        state.otherPacketLoss = oLoss;
+
+        // Actualizar UI
+        statVideoMbps.textContent = `${videoMbps.toFixed(1)} Mbps`;
+        statUtilization.textContent = `${state.utilizationPct}%`;
+        statLoss.textContent = `${(vLoss * 100).toFixed(1)}%`;
+
+        statUtilization.style.color = state.utilizationPct > 100 ? '#b91c1c' : state.utilizationPct > 80 ? '#b46514' : '#1b7a68';
+        statLoss.style.color = vLoss > 0.02 ? '#b91c1c' : '#1f2926';
+
+        clientDelayMs.textContent = state.totalLatencyMs;
+        routerQueueMs.textContent = state.queueDelayMs;
+
+        if (vLoss > 0.04) {
+          clientWarning.classList.remove('hidden');
+          delayBadge.style.borderColor = '#fca5a5';
+        } else {
+          clientWarning.classList.add('hidden');
+          delayBadge.style.borderColor = '#dce0de';
+        }
+      }
+
+      // Escuchar cambios en todos los controles
+      [elRes, elFps, elCodec, elQos, elLink].forEach(el => {
+        el.addEventListener('change', recalculateNetworkMetrics);
+      });
+      elTraffic.addEventListener('input', () => {
+        updateSliderFill();
+        recalculateNetworkMetrics();
+      });
+
+      // Ajuste responsivo para pantallas Retina / HiDPI
+      function resizeCanvas(canvas, ctx) {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        if (canvas.width !== Math.round(rect.width * dpr) || canvas.height !== Math.round(rect.height * dpr)) {
+          canvas.width = Math.round(rect.width * dpr);
+          canvas.height = Math.round(rect.height * dpr);
+        }
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { width: rect.width, height: rect.height };
+      }
+
+      // =========================================================================
+      // MOTOR DE ESCENA YOLOV8N (Entidades en movimiento + Buffer de Cliente)
+      // =========================================================================
+      const entities = [
+        { id: 1, type: 'persona', x: 0.42, speed: -0.045, baseConf: 0.84, phase: 0.2 },
+        { id: 2, type: 'perro',   x: 0.62, speed: -0.055, baseConf: 0.93, phase: 1.7 },
+        { id: 3, type: 'persona', x: 0.86, speed: -0.038, baseConf: 0.81, phase: 3.1 },
+        { id: 4, type: 'auto',    x: 0.93, speed: -0.085, baseConf: 0.89, phase: 4.4 }
+      ];
+
+      // Historial de estados (frames) para simular el retardo real del cliente
+      const frameBuffer = [];
+      let lastClientFrame = null;
+      let lastCameraRenderTime = 0;
+
+      function updateEntities(dt, simTime) {
+        entities.forEach(ent => {
+          ent.x += ent.speed * dt;
+          // Reaparecer suavemente por el borde derecho al salir por la izquierda
+          if (ent.x < -0.18) {
+            ent.x = 1.12 + Math.random() * 0.15;
+          }
+          // Ligera fluctuación realista de confianza de detección YOLOv8n
+          const jitter = Math.sin(simTime * 3.2 + ent.phase) * 0.025 + Math.cos(simTime * 7.1 + ent.id) * 0.01;
+          ent.conf = Math.max(0.65, Math.min(0.98, ent.baseConf + jitter));
+        });
+      }
+
+      // Dibuja la escena estilo técnico minimalista de la referencia
+      function drawYoloScene(ctx, width, height, snapshotEntities, isDegraded) {
+        ctx.clearRect(0, 0, width, height);
+
+        // Fondo gris muy claro
+        ctx.fillStyle = '#eaedeb';
+        ctx.fillRect(0, 0, width, height);
+
+        // Calzada / Acera inferior
+        const roadHeight = 34;
+        const roadY = height - roadHeight;
+        ctx.fillStyle = '#cfd5d2';
+        ctx.fillRect(0, roadY, width, roadHeight);
+
+        // Línea discontinua de la calle
+        ctx.strokeStyle = '#7b8783';
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([12, 12]);
+        ctx.beginPath();
+        ctx.moveTo(0, roadY + roadHeight * 0.55);
+        ctx.lineTo(width, roadY + roadHeight * 0.55);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        const groundY = roadY + 6; // Punto de apoyo sobre la acera
+        let visiblePersons = 0;
+
+        snapshotEntities.forEach(ent => {
+          const cx = ent.x * width;
+          if (cx < -80 || cx > width + 80) return;
+
+          if (ent.type === 'persona' && cx > 0 && cx < width) {
+            visiblePersons++;
+          }
+
+          let boxX, boxY, boxW, boxH, labelText;
+
+          if (ent.type === 'persona') {
+            boxW = 42;
+            boxH = 84;
+            boxX = cx - boxW / 2;
+            boxY = groundY - boxH;
+            labelText = `persona ${ent.conf.toFixed(2)}`;
+
+            // Silueta geométrica de persona (cabeza circular + torso rectangular)
+            ctx.fillStyle = '#53605c';
+            ctx.beginPath();
+            ctx.arc(cx, boxY + 15, 8.5, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.roundRect(cx - 10, boxY + 27, 20, 48, 3);
+            ctx.fill();
+
+          } else if (ent.type === 'perro') {
+            boxW = 54;
+            boxH = 34;
+            boxX = cx - boxW / 2;
+            boxY = groundY - boxH + 4;
+            labelText = `perro ${ent.conf.toFixed(2)}`;
+
+            // Silueta geométrica minimalista de perro
+            ctx.fillStyle = '#53605c';
+            // Cuerpo ovalado
+            ctx.beginPath();
+            ctx.ellipse(cx - 3, boxY + 19, 17, 8.5, 0, 0, Math.PI * 2);
+            ctx.fill();
+            // Cabeza
+            ctx.beginPath();
+            ctx.arc(cx + 15, boxY + 12, 6, 0, Math.PI * 2);
+            ctx.fill();
+            // Cola pequeña
+            ctx.fillRect(cx - 22, boxY + 11, 5, 3);
+
+          } else if (ent.type === 'auto') {
+            boxW = 92;
+            boxH = 54;
+            boxX = cx - boxW / 2;
+            boxY = groundY - boxH + 4;
+            labelText = `auto ${ent.conf.toFixed(2)}`;
+
+            // Silueta geométrica de automóvil
+            ctx.fillStyle = '#53605c';
+            // Cabina superior
+            ctx.beginPath();
+            ctx.roundRect(cx - 24, boxY + 6, 48, 20, [8, 8, 0, 0]);
+            ctx.fill();
+            // Chasis inferior
+            ctx.beginPath();
+            ctx.roundRect(cx - 40, boxY + 22, 80, 20, 5);
+            ctx.fill();
+            // Ruedas
+            ctx.fillStyle = '#38423f';
+            ctx.beginPath();
+            ctx.arc(cx - 22, boxY + 42, 7.5, 0, Math.PI * 2);
+            ctx.arc(cx + 22, boxY + 42, 7.5, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Dibujar Bounding Box estilo YOLOv8
+          ctx.strokeStyle = '#b86814';
+          ctx.lineWidth = 2.2;
+          ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+          // Etiqueta superior naranja/ámbar con texto blanco
+          ctx.font = '600 11px "JetBrains Mono", monospace';
+          const textMetrics = ctx.measureText(labelText);
+          const tagW = textMetrics.width + 10;
+          const tagH = 18;
+          const tagY = Math.max(4, boxY - tagH);
+
+          ctx.fillStyle = '#b86814';
+          ctx.fillRect(boxX - 1, tagY, tagW, tagH);
+
+          ctx.fillStyle = '#ffffff';
+          ctx.fillText(labelText, boxX + 4, tagY + 13);
+        });
+
+        // Efecto visual sutil de degradación por baja resolución o pérdida severa de paquetes
+        if (state.resolution === '640x360') {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+          for (let y = 0; y < height; y += 4) {
+            ctx.fillRect(0, y, width, 1);
+          }
+        }
+
+        if (isDegraded) {
+          // Artefactos ligeros de compresión/pérdida de paquetes UDP/RTP
+          ctx.fillStyle = 'rgba(185, 28, 28, 0.07)';
+          ctx.fillRect(0, 0, width, height);
+          ctx.fillStyle = 'rgba(80, 95, 90, 0.18)';
+          for (let i = 0; i < 6; i++) {
+            const glitchY = ((Date.now() * 0.1 + i * 47) % (height - 20));
+            ctx.fillRect(10, glitchY, width - 20, 4);
+          }
+        }
+
+        return visiblePersons;
+      }
+
+      // =========================================================================
+      // MOTOR DE TOPOLOGÍA DE RED Y PAQUETES (SERVIDOR -> SWITCH -> ROUTER -> CLIENTE)
+      // =========================================================================
+      const packets = [];
+      let spawnAccumVideo = 0;
+      let spawnAccumOther = 0;
+
+      function updateAndDrawNetwork(dt, simTime) {
+        const { width, height } = resizeCanvas(canvasNet, ctxNet);
+        ctxNet.clearRect(0, 0, width, height);
+
+        // Posiciones horizontales adaptativas de los 4 nodos
+        const padX = Math.max(62, width * 0.085);
+        const usableW = width - padX * 2;
+        const nodeY = height * 0.48;
+        const nodeW = Math.min(126, Math.max(96, usableW * 0.145));
+        const nodeH = 48;
+
+        const nodes = [
+          { id: 'server', title: 'Servidor', sub: 'YOLO · VLAN10', x: padX },
+          { id: 'switch', title: 'Switch',   sub: '2960 · 802.1Q', x: padX + usableW * 0.33 },
+          { id: 'router', title: 'Router',   sub: 'R-o-a-S · NAT', x: padX + usableW * 0.66 },
+          { id: 'client', title: 'Cliente',  sub: 'VLC · VLAN20',  x: padX + usableW }
+        ];
+
+        // Coordenadas de los enlaces
+        const links = [
+          { x1: nodes[0].x + nodeW / 2, x2: nodes[1].x - nodeW / 2, label: 'GigE' },
+          { x1: nodes[1].x + nodeW / 2, x2: nodes[2].x - nodeW / 2, label: 'troncal' },
+          { x1: nodes[2].x + nodeW / 2, x2: nodes[3].x - nodeW / 2, label: `enlace ${state.routerLinkMbps} Mbps` }
+        ];
+
+        // Dibujar líneas de enlace y etiquetas superiores
+        ctxNet.strokeStyle = '#9aa5a1';
+        ctxNet.lineWidth = 2.5;
+        ctxNet.font = '500 11.5px "JetBrains Mono", monospace';
+        ctxNet.textAlign = 'center';
+
+        links.forEach(lk => {
+          ctxNet.beginPath();
+          ctxNet.moveTo(lk.x1, nodeY);
+          ctxNet.lineTo(lk.x2, nodeY);
+          ctxNet.stroke();
+
+          ctxNet.fillStyle = '#4d5b56';
+          ctxNet.fillText(lk.label, (lk.x1 + lk.x2) / 2, nodeY - 14);
+        });
+
+        // Generación de nuevos paquetes según tasas actuales
+        const videoRate = Math.min(18, Math.max(2.5, state.videoMbps * 1.1));
+        const otherRate = Math.min(22, (state.otherTrafficPct / 100) * 16);
+
+        spawnAccumVideo += videoRate * dt;
+        spawnAccumOther += otherRate * dt;
+
+        while (spawnAccumVideo >= 1) {
+          spawnAccumVideo -= 1;
+          packets.push({
+            type: 'video',
+            x: links[0].x1,
+            y: nodeY,
+            vy: 0,
+            speed: 195 + Math.random() * 25,
+            dropped: false,
+            alpha: 1,
+            evaluatedAtRouter: false
+          });
+        }
+
+        while (spawnAccumOther >= 1) {
+          spawnAccumOther -= 1;
+          packets.push({
+            type: 'other',
+            x: links[1].x1 + 4, // Entra desde la red corporativa en el Switch
+            y: nodeY,
+            vy: 0,
+            speed: 185 + Math.random() * 30,
+            dropped: false,
+            alpha: 1,
+            evaluatedAtRouter: false
+          });
+        }
+
+        // Actualizar y dibujar paquetes
+        const routerEntryX = nodes[2].x - nodeW / 2 - 4;
+        const routerExitX = nodes[2].x + nodeW / 2;
+        const clientEntryX = nodes[3].x - nodeW / 2;
+
+        for (let i = packets.length - 1; i >= 0; i--) {
+          const p = packets[i];
+
+          if (p.dropped) {
+            // Animación de caída desde la cola del router en color rojo
+            p.vy += 260 * dt;
+            p.y += p.vy * dt;
+            p.x += 12 * dt;
+            p.alpha -= 1.35 * dt;
+            if (p.alpha <= 0 || p.y > height) {
+              packets.splice(i, 1);
+              continue;
+            }
+          } else {
+            // Si hay cola en el router, los paquetes se frenan ligeramente antes de entrar
+            let currentSpeed = p.speed;
+            if (state.queueDelayMs > 30 && p.x > routerEntryX - 38 && p.x < routerEntryX) {
+              const slowdown = Math.max(0.28, 1 - state.queueDelayMs / 700);
+              currentSpeed *= slowdown;
+            }
+
+            p.x += currentSpeed * dt;
+
+            // Evaluación en la entrada de la cola del Router
+            if (!p.evaluatedAtRouter && p.x >= routerEntryX) {
+              p.evaluatedAtRouter = true;
+              const dropProb = p.type === 'video' ? state.videoPacketLoss : state.otherPacketLoss;
+              if (Math.random() < dropProb) {
+                p.dropped = true;
+                p.vy = 25;
+              }
+            }
+
+            // Eliminar al llegar al cliente
+            if (p.x >= clientEntryX) {
+              packets.splice(i, 1);
+              continue;
+            }
+          }
+
+          // Ocultar el punto mientras atraviesa el interior de los rectángulos de los nodos
+          const insideNode = nodes.some(n => Math.abs(p.x - n.x) < nodeW / 2 - 2 && !p.dropped);
+          if (!insideNode) {
+            ctxNet.save();
+            ctxNet.globalAlpha = Math.max(0, p.alpha);
+            ctxNet.fillStyle = p.dropped ? '#b91c1c' : (p.type === 'video' ? '#c96a0b' : '#4a5753');
+            ctxNet.beginPath();
+            ctxNet.arc(p.x, p.y, 4.3, 0, Math.PI * 2);
+            ctxNet.fill();
+            ctxNet.restore();
+          }
+        }
+
+        // Dibujar los 4 nodos rectangulares con borde verde bosque
+        nodes.forEach(n => {
+          const rx = n.x - nodeW / 2;
+          const ry = nodeY - nodeH / 2;
+
+          ctxNet.fillStyle = '#f2f5f3';
+          ctxNet.strokeStyle = '#1b7a68';
+          ctxNet.lineWidth = 2.2;
+
+          ctxNet.beginPath();
+          ctxNet.roundRect(rx, ry, nodeW, nodeH, 10);
+          ctxNet.fill();
+          ctxNet.stroke();
+
+          // Título del nodo
+          ctxNet.fillStyle = '#1f2926';
+          ctxNet.font = '700 12.5px "JetBrains Mono", monospace';
+          ctxNet.textAlign = 'center';
+          ctxNet.fillText(n.title, n.x, nodeY - 4);
+
+          // Subtítulo técnico del nodo
+          ctxNet.fillStyle = '#53625d';
+          ctxNet.font = '500 10px "JetBrains Mono", monospace';
+          ctxNet.fillText(n.sub, n.x, nodeY + 13);
+        });
+      }
+
+      // =========================================================================
+      // BUCLE PRINCIPAL DE ANIMACIÓN
+      // =========================================================================
+      let lastTimestamp = performance.now();
+
+      function animate(now) {
+        const dt = Math.min(0.05, (now - lastTimestamp) / 1000);
+        lastTimestamp = now;
+        const simTime = now / 1000;
+
+        // 1. Actualizar movimiento de entidades en la cámara
+        updateEntities(dt, simTime);
+
+        // Guardar instantánea en el buffer temporal para simular retardo real en el cliente
+        const snapshot = entities.map(e => ({ ...e }));
+        frameBuffer.push({ timestamp: now, entities: snapshot });
+
+        // Limpiar frames muy antiguos (> 3 segundos)
+        while (frameBuffer.length > 2 && now - frameBuffer[0].timestamp > 3000) {
+          frameBuffer.shift();
+        }
+
+        // 2. Renderizar Panel Cámara (respeta el FPS seleccionado)
+        const frameIntervalMs = 1000 / state.fps;
+        if (now - lastCameraRenderTime >= frameIntervalMs * 0.9) {
+          lastCameraRenderTime = now;
+          const camDim = resizeCanvas(canvasCam, ctxCam);
+          const camCount = drawYoloScene(ctxCam, camDim.width, camDim.height, snapshot, false);
+          camPersonCount.textContent = camCount;
+        }
+
+        // 3. Renderizar Panel Cliente con retardo real (state.totalLatencyMs) y caída de frames
+        const targetClientTime = now - state.totalLatencyMs;
+        let delayedFrame = frameBuffer[0];
+        for (let i = frameBuffer.length - 1; i >= 0; i--) {
+          if (frameBuffer[i].timestamp <= targetClientTime) {
+            delayedFrame = frameBuffer[i];
+            break;
+          }
+        }
+
+        // Si hay pérdida de paquetes de video, simular tartamudeo (congelamiento temporal de frame)
+        const dropFrameChance = state.videoPacketLoss * 0.65;
+        if (!lastClientFrame || Math.random() > dropFrameChance) {
+          lastClientFrame = delayedFrame;
+        }
+
+        const clientDim = resizeCanvas(canvasClient, ctxClient);
+        if (lastClientFrame) {
+          const isDegraded = state.videoPacketLoss > 0.08;
+          const cliCount = drawYoloScene(ctxClient, clientDim.width, clientDim.height, lastClientFrame.entities, isDegraded);
+          clientPersonCount.textContent = cliCount;
+        }
+
+        // 4. Renderizar Topología de Red y Paquetes
+        updateAndDrawNetwork(dt, simTime);
+
+        requestAnimationFrame(animate);
+      }
+
+      // Inicialización al cargar la ventana
+      window.addEventListener('load', () => {
+        updateSliderFill();
+        recalculateNetworkMetrics();
+        requestAnimationFrame(animate);
+      });
+    })();
+  </script>
 </body>
 </html>

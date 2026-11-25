@@ -30,7 +30,7 @@
   * **Evaluación de Impacto:** Mide la eficiencia, precisión métrica (mAP) y el rendimiento optimizado del sistema implementado con YOLOv8.
 
 # 9-Bloques-del-proyecto
-# ⚡ Red Neuronal del Proyecto (Sistema Operativo de Bloques)
+#  (Sistema Operativo de Bloques)
 
 ```mermaid
 graph TD

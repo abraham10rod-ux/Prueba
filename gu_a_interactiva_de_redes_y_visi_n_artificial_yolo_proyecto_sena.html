@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Interactiva de Redes y Visión Artificial (YOLO) – Proyecto SENA</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- TensorFlow.js & COCO-SSD CDN for Live Webcam Detection -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        skyBrand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f0f9ff;
+            color: #0f172a;
+        }
+
+        .main-tab-btn {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .main-tab-btn.active {
+            background-color: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 6px 20px -4px rgba(2, 132, 199, 0.45);
+        }
+
+        .scope-btn {
+            transition: all 0.2s ease;
+        }
+        .scope-btn.active {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            color: #ffffff;
+            border-color: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px -4px rgba(2, 132, 199, 0.35);
+        }
+
+        .device-card {
+            transition: all 0.25s ease;
+        }
+        .device-card.active {
+            border-color: #0284c7;
+            background-color: #f0f9ff;
+            box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.2);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #e0f2fe;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #0284c7;
+            border-radius: 4px;
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+        .animate-float {
+            animation: floatSlow 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col custom-scrollbar">
+
+    <!-- ==================== ENCABEZADO SUPERIOR (AZUL CIELO + BLANCO) ==================== -->
+    <header class="bg-white border-b-4 border-skyBrand-500 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-col lg:flex-row justify-between items-center gap-4">
+            
+            <!-- Identidad del Proyecto -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-skyBrand-500 to-skyBrand-700 text-white flex items-center justify-center text-2xl shadow-md animate-float">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h1 class="text-base md:text-xl font-black text-skyBrand-900 tracking-tight">
+                            GUÍA INTERACTIVA DE REDES Y VISIÓN ARTIFICIAL (YOLO)
+                        </h1>
+                        <span class="text-[11px] font-bold bg-skyBrand-100 text-skyBrand-700 border border-skyBrand-300 px-2.5 py-0.5 rounded-full uppercase">
+                            Proyecto SENA
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-medium">
+                        Teoría interactiva, simuladores en tiempo real y fundamentos de Telecomunicaciones + Inteligencia Artificial
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navegación Principal entre Pestañas -->
+            <nav class="flex flex-wrap items-center gap-2 bg-skyBrand-50 p-1.5 rounded-2xl border border-skyBrand-200 w-full lg:w-auto justify-center">
+                <button onclick="switchMainTab('redes')" id="tab-btn-redes" class="main-tab-btn active px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <span>1. Redes y Telecomunicaciones</span>
+                </button>
+                <button onclick="switchMainTab('yolo')" id="tab-btn-yolo" class="main-tab-btn px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold text-skyBrand-800 hover:bg-white flex items-center gap-2">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>2. Visión Artificial y YOLO</span>
+                </button>
+                <button onclick="scrollToQuiz()" class="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-white text-skyBrand-700 border border-skyBrand-200 hover:bg-skyBrand-100 transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-clipboard-question text-skyBrand-500"></i>
+                    <span class="hidden sm:inline">Autoevaluación</span>
+                </button>
+            </nav>
+
+        </div>
+    </header>
+
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+    <main class="max-w-7xl mx-auto w-full p-4 md:p-6 flex-grow space-y-8">
+
+        <!-- ========================================================================= -->
+        <!-- PESTAÑA 1: REDES Y TELECOMUNICACIONES                                     -->
+        <!-- ========================================================================= -->
+        <div id="panel-redes" class="space-y-8">
+
+            <!-- SECCIÓN 1A: EXPLORADOR DE ALCANCE DE REDES (PAN, LAN, MAN, WAN) -->
+            <section class="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-skyBrand-200 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-skyBrand-100 pb-4 gap-3">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-skyBrand-600 bg-skyBrand-50 px-2.5 py-1 rounded-lg border border-skyBrand-200">
+                            Clasificación Geográfica y Alcance
+                        </span>
+                        <h2 class="text-lg md:text-2xl font-extrabold text-slate-800 mt-1.5">
+                            Tipos de Redes: PAN, LAN, MAN y WAN
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-500 mt-0.5">
+                            Selecciona cada tipo de red para explorar su cobertura física, tecnologías estándar, latencia y aplicación en el proyecto SENA.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Botones Interactivos PAN / LAN / MAN / WAN -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <button onclick="selectNetworkScope('PAN')" id="scope-btn-PAN" class="scope-btn active p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-left flex flex-col justify-between">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black tracking-wider uppercase opacity-80">Alcance Personal</span>
+                            <i class="fa-brands fa-bluetooth-b text-xl"></i>
+                        </div>
+                        <div class="text-2xl font-black">PAN</div>
+                        <div class="text-[11px] opacity-90 mt-0.5">Hasta 10 metros</div>
+                    </button>
+
+                    <button onclick="selectNetworkScope('LAN')" id="scope-btn-LAN" class="scope-btn p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-skyBrand-900 text-left flex flex-col justify-between hover:border-skyBrand-400">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black tracking-wider uppercase text-skyBrand-600">Red Local</span>
+                            <i class="fa-solid fa-building text-xl text-skyBrand-500"></i>
+                        </div>
+                        <div class="text-2xl font-black">LAN</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Edificio / Planta Industrial</div>
+                    </button>
+
+                    <button onclick="selectNetworkScope('MAN')" id="scope-btn-MAN" class="scope-btn p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-skyBrand-900 text-left flex flex-col justify-between hover:border-skyBrand-400">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black tracking-wider uppercase text-skyBrand-600">Red Metropolitana</span>
+                            <i class="fa-solid fa-city text-xl text-skyBrand-500"></i>
+                        </div>
+                        <div class="text-2xl font-black">MAN</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Ciudad / Campus (hasta 50 km)</div>
+                    </button>
+
+                    <button onclick="selectNetworkScope('WAN')" id="scope-btn-WAN" class="scope-btn p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-skyBrand-900 text-left flex flex-col justify-between hover:border-skyBrand-400">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-black tracking-wider uppercase text-skyBrand-600">Red Amplia</span>
+                            <i class="fa-solid fa-earth-americas text-xl text-skyBrand-500"></i>
+                        </div>
+                        <div class="text-2xl font-black">WAN</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">Países / Continentes / Internet</div>
+                    </button>
+                </div>
+
+                <!-- Panel Detallado Dinámico de Alcance -->
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 bg-skyBrand-50/70 p-5 rounded-2xl border border-skyBrand-200 items-center">
+                    
+                    <!-- Ilustración SVG Dinámica -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-4 border border-skyBrand-200 shadow-inner flex items-center justify-center h-56" id="scope-svg-container">
+                        <!-- Renderizado dinámico via JS -->
+                    </div>
+
+                    <!-- Información Técnica Detallada -->
+                    <div class="lg:col-span-3 space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h3 id="scope-title" class="text-lg font-extrabold text-skyBrand-900">
+                                PAN – Personal Area Network (Red de Área Personal)
+                            </h3>
+                            <span id="scope-badge" class="text-xs font-bold bg-skyBrand-600 text-white px-3 py-1 rounded-full">
+                                Radio: 1 m – 10 m
+                            </span>
+                        </div>
+
+                        <p id="scope-desc" class="text-xs md:text-sm text-slate-600 leading-relaxed">
+                            Interconecta dispositivos personales cercanos a un usuario individual. Es ideal para periféricos inalámbricos, sensores portátiles IoT y sincronización de corto alcance sin infraestructura cableada compleja.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200">
+                                <span class="text-[10px] font-bold uppercase text-skyBrand-600 block">Tecnologías Clave</span>
+                                <span id="scope-tech" class="font-bold text-slate-800 mt-0.5 block">Bluetooth, Zigbee, NFC, USB</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200">
+                                <span class="text-[10px] font-bold uppercase text-skyBrand-600 block">Latencia Típica</span>
+                                <span id="scope-latency" class="font-bold text-slate-800 mt-0.5 block">1 ms – 15 ms</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200">
+                                <span class="text-[10px] font-bold uppercase text-skyBrand-600 block">Ejemplo Real / SENA</span>
+                                <span id="scope-example" class="font-bold text-slate-800 mt-0.5 block">Sensores biométricos de operario y tablet</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECCIÓN 1B: DISPOSITIVOS DE RED (SWITCH, ROUTER, SERVIDOR, CLIENTE) + SIMULADOR -->
+            <section class="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-skyBrand-200 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-skyBrand-100 pb-4 gap-3">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-skyBrand-600 bg-skyBrand-50 px-2.5 py-1 rounded-lg border border-skyBrand-200">
+                            Arquitectura de Hardware y Roles
+                        </span>
+                        <h2 class="text-lg md:text-2xl font-extrabold text-slate-800 mt-1.5">
+                            Switch, Router, Servidor y Cliente
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-500 mt-0.5">
+                            Haz clic en cada equipo para estudiar su capa OSI, direccionamiento y función, y prueba cómo viajan los paquetes en el simulador.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4 Tarjetas Seleccionables de Equipos -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    
+                    <!-- SWITCH -->
+                    <button onclick="selectDevice('SWITCH')" id="dev-card-SWITCH" class="device-card active p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-left flex flex-col justify-between space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-extrabold uppercase bg-skyBrand-100 text-skyBrand-700 px-2.5 py-0.5 rounded-full">Capa 2 OSI</span>
+                            <i class="fa-solid fa-network-wired text-2xl text-skyBrand-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-800">Switch (Conmutador)</h3>
+                            <p class="text-xs text-slate-500 mt-1">Conecta equipos dentro de una misma LAN usando direcciones MAC y tramas Ethernet.</p>
+                        </div>
+                        <div class="text-[11px] font-semibold text-skyBrand-600 flex items-center gap-1">
+                            <span>Ver detalles técnicos</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </div>
+                    </button>
+
+                    <!-- ROUTER -->
+                    <button onclick="selectDevice('ROUTER')" id="dev-card-ROUTER" class="device-card p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-left flex flex-col justify-between space-y-3 hover:border-skyBrand-400">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-extrabold uppercase bg-skyBrand-100 text-skyBrand-700 px-2.5 py-0.5 rounded-full">Capa 3 OSI</span>
+                            <i class="fa-solid fa-route text-2xl text-skyBrand-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-800">Router (Enrutador)</h3>
+                            <p class="text-xs text-slate-500 mt-1">Interconecta redes distintas (LAN ↔ WAN), asigna rutas IP, NAT y aplica políticas QoS.</p>
+                        </div>
+                        <div class="text-[11px] font-semibold text-skyBrand-600 flex items-center gap-1">
+                            <span>Ver detalles técnicos</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </div>
+                    </button>
+
+                    <!-- SERVIDOR -->
+                    <button onclick="selectDevice('SERVIDOR')" id="dev-card-SERVIDOR" class="device-card p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-left flex flex-col justify-between space-y-3 hover:border-skyBrand-400">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-extrabold uppercase bg-skyBrand-100 text-skyBrand-700 px-2.5 py-0.5 rounded-full">Capa 7 · Host</span>
+                            <i class="fa-solid fa-server text-2xl text-skyBrand-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-800">Servidor</h3>
+                            <p class="text-xs text-slate-500 mt-1">Equipo de alto rendimiento que procesa servicios, bases de datos y modelos de IA (YOLOv8n).</p>
+                        </div>
+                        <div class="text-[11px] font-semibold text-skyBrand-600 flex items-center gap-1">
+                            <span>Ver detalles técnicos</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </div>
+                    </button>
+
+                    <!-- CLIENTE -->
+                    <button onclick="selectDevice('CLIENTE')" id="dev-card-CLIENTE" class="device-card p-4 rounded-2xl border-2 border-skyBrand-200 bg-white text-left flex flex-col justify-between space-y-3 hover:border-skyBrand-400">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-extrabold uppercase bg-skyBrand-100 text-skyBrand-700 px-2.5 py-0.5 rounded-full">Capa 7 · Terminal</span>
+                            <i class="fa-solid fa-desktop text-2xl text-skyBrand-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-slate-800">Cliente</h3>
+                            <p class="text-xs text-slate-500 mt-1">Dispositivo final del usuario que solicita recursos y visualiza el video procesado.</p>
+                        </div>
+                        <div class="text-[11px] font-semibold text-skyBrand-600 flex items-center gap-1">
+                            <span>Ver detalles técnicos</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </div>
+                    </button>
+
+                </div>
+
+                <!-- Ficha Técnica Profunda del Equipo Seleccionado -->
+                <div class="bg-skyBrand-50 border border-skyBrand-200 rounded-2xl p-5 grid grid-cols-1 lg:grid-cols-3 gap-5">
+                    <div class="lg:col-span-2 space-y-2.5">
+                        <div class="flex items-center gap-2">
+                            <span id="dev-detail-layer" class="text-xs font-bold bg-skyBrand-600 text-white px-2.5 py-0.5 rounded">CAPA 2 – ENLACE DE DATOS</span>
+                            <h4 id="dev-detail-title" class="text-base md:text-lg font-extrabold text-skyBrand-900">Switch Industrial (Conmutador de Red)</h4>
+                        </div>
+                        <p id="dev-detail-body" class="text-xs md:text-sm text-slate-700 leading-relaxed">
+                            Un <strong>Switch</strong> opera principalmente en la <strong>Capa 2 (Enlace de Datos)</strong> del modelo OSI. A diferencia de un concentrador antiguo (Hub) que enviaba datos a todos los puertos, el Switch aprende las <strong>direcciones físicas MAC</strong> de cada dispositivo conectado y construye una tabla CAM para enviar las tramas únicamente al puerto de destino exacto, evitando colisiones y maximizando el ancho de banda. Además, permite crear redes virtuales segmentadas llamadas <strong>VLANs (IEEE 802.1Q)</strong>.
+                        </p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-skyBrand-200 space-y-2 text-xs">
+                        <div class="font-bold text-skyBrand-800 border-b border-skyBrand-100 pb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-microchip text-skyBrand-500"></i> Ficha de Identificación
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Identificador usado:</span>
+                            <span id="dev-spec-id" class="font-bold text-slate-800">Dirección MAC (48 bits)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Unidad de Datos (PDU):</span>
+                            <span id="dev-spec-pdu" class="font-bold text-slate-800">Trama (Frame Ethernet)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Rol en Proyecto SENA:</span>
+                            <span id="dev-spec-role" class="font-bold text-skyBrand-700">Une Cámara, Servidor y Router</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIMULADOR INTERACTIVO DE ENVÍO DE PAQUETES (LAN vs WAN) -->
+                <div class="bg-white border-2 border-skyBrand-300 rounded-2xl p-5 space-y-4 shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                        <div>
+                            <h3 class="text-sm md:text-base font-extrabold text-skyBrand-900 flex items-center gap-2">
+                                <i class="fa-solid fa-paper-plane text-skyBrand-500"></i> Simulador Interactivo: ¿Cómo viajan los datos?
+                            </h3>
+                            <p class="text-xs text-slate-500">
+                                Prueba la diferencia entre comunicación interna en la red local (Switch) y comunicación externa hacia Internet/WAN (Router).
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="triggerPacketSim('LAN')" class="px-4 py-2 rounded-xl text-xs font-bold bg-skyBrand-600 hover:bg-skyBrand-700 text-white shadow transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-arrows-left-right"></i> Enviar Trama LAN (Switch)
+                            </button>
+                            <button onclick="triggerPacketSim('WAN')" class="px-4 py-2 rounded-xl text-xs font-bold bg-skyBrand-900 hover:bg-slate-800 text-white shadow transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-globe"></i> Enviar Paquete Internet/WAN (Router)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Interactivo de Flujo -->
+                    <div class="relative bg-skyBrand-50 rounded-2xl border border-skyBrand-200 h-52 w-full overflow-hidden">
+                        <canvas id="canvas-net-sim" class="w-full h-full block"></canvas>
+                    </div>
+
+                    <!-- Narrador Paso a Paso del Simulador -->
+                    <div id="net-sim-narrator" class="bg-skyBrand-100/70 border border-skyBrand-300 rounded-xl p-3 text-xs text-skyBrand-950 font-medium flex items-center gap-3">
+                        <i class="fa-solid fa-circle-info text-skyBrand-600 text-base flex-shrink-0"></i>
+                        <span>Selecciona un botón arriba para ver en tiempo real cómo el Switch conmuta tramas MAC o cómo el Router enruta paquetes IP hacia la WAN.</span>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- PESTAÑA 2: VISIÓN ARTIFICIAL Y YOLO                                       -->
+        <!-- ========================================================================= -->
+        <div id="panel-yolo" class="space-y-8 hidden">
+
+            <!-- SECCIÓN 2A: ¿QUÉ ES YOLO? (ARQUITECTURA SINGLE-STAGE VS TWO-STAGE) -->
+            <section class="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-skyBrand-200 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-skyBrand-100 pb-4 gap-3">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-skyBrand-600 bg-skyBrand-50 px-2.5 py-1 rounded-lg border border-skyBrand-200">
+                            Fundamentos de Deep Learning y Visión Artificial
+                        </span>
+                        <h2 class="text-lg md:text-2xl font-extrabold text-slate-800 mt-1.5">
+                            ¿Qué es YOLO? ("You Only Look Once")
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-500 mt-0.5">
+                            YOLO revolucionó la detección de objetos al analizar toda la imagen en una sola pasada de red neuronal convolucional (CNN) en tiempo real.
+                        </p>
+                    </div>
+
+                    <!-- Toggle Comparador de Arquitecturas -->
+                    <div class="flex bg-skyBrand-50 p-1 rounded-xl border border-skyBrand-200 text-xs font-bold">
+                        <button onclick="setYoloArchMode('YOLO')" id="btn-arch-yolo" class="px-3.5 py-1.5 rounded-lg bg-skyBrand-600 text-white shadow">
+                            Arquitectura YOLO (1 Etapa)
+                        </button>
+                        <button onclick="setYoloArchMode('TRADITIONAL')" id="btn-arch-trad" class="px-3.5 py-1.5 rounded-lg text-skyBrand-800 hover:bg-white">
+                            Detectores Clásicos (2 Etapas)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Visualización Comparativa Interactiva -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                    
+                    <!-- Explicación Teórica del Modo Seleccionado -->
+                    <div class="lg:col-span-1 space-y-4">
+                        <div class="bg-skyBrand-50 p-5 rounded-2xl border border-skyBrand-200 space-y-3">
+                            <span id="yolo-arch-badge" class="text-[10px] font-extrabold uppercase bg-skyBrand-600 text-white px-2.5 py-1 rounded">
+                                SINGLE-STAGE DETECTOR (TIEMPO REAL)
+                            </span>
+                            <h3 id="yolo-arch-title" class="text-base font-extrabold text-skyBrand-900">
+                                Cómo funciona YOLO en una sola mirada
+                            </h3>
+                            <p id="yolo-arch-desc" class="text-xs text-slate-700 leading-relaxed">
+                                YOLO divide la imagen de entrada en una cuadrícula de <strong>S × S celdas</strong>. Cada celda predice simultáneamente múltiples <strong>cuadros delimitadores (Bounding Boxes)</strong>, un puntaje de confianza y las probabilidades de clase en una única evaluación de red neuronal.
+                            </p>
+                            <div class="pt-2 border-t border-skyBrand-200 space-y-1.5 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Velocidad de Inferencia:</span>
+                                    <span id="yolo-arch-speed" class="font-bold text-skyBrand-700">30 – 120+ FPS (Tiempo Real)</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Pasadas por Imagen:</span>
+                                    <span id="yolo-arch-passes" class="font-bold text-skyBrand-700">1 única pasada (End-to-End)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Anatomía de una Predicción -->
+                        <div class="bg-white p-4 rounded-2xl border border-skyBrand-200 space-y-2 text-xs">
+                            <h4 class="font-bold text-skyBrand-900 flex items-center gap-1.5">
+                                <i class="fa-solid fa-vector-square text-skyBrand-500"></i> Fórmula del Tensor de Salida
+                            </h4>
+                            <p class="text-slate-600 text-[11px]">
+                                Cada caja predicha contiene 5 valores base + las probabilidades de clase:
+                            </p>
+                            <div class="bg-skyBrand-50 p-2.5 rounded-lg font-mono text-[11px] text-skyBrand-800 border border-skyBrand-200 text-center font-bold">
+                                [ x_centro, y_centro, ancho (w), alto (h), Confianza, Clases... ]
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pipeline Visual Paso a Paso -->
+                    <div class="lg:col-span-2 bg-skyBrand-50/60 p-5 rounded-2xl border border-skyBrand-200 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-skyBrand-900 uppercase tracking-wider">
+                                Flujo Interno de Procesamiento de Imagen
+                            </span>
+                            <label class="text-xs font-semibold text-skyBrand-800 flex items-center gap-1.5 cursor-pointer">
+                                <input type="checkbox" id="chk-yolo-grid" checked onchange="drawYoloDemoCanvas()" class="accent-skyBrand-600">
+                                Mostrar Cuadrícula S × S
+                            </label>
+                        </div>
+
+                        <!-- 4 Pasos del Pipeline YOLO -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200 shadow-xs">
+                                <div class="w-8 h-8 rounded-lg bg-skyBrand-100 text-skyBrand-700 mx-auto flex items-center justify-center font-bold mb-1.5">1</div>
+                                <div class="font-bold text-xs text-slate-800">Backbone (CSPDarknet)</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">Extrae bordes, texturas y formas</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200 shadow-xs">
+                                <div class="w-8 h-8 rounded-lg bg-skyBrand-100 text-skyBrand-700 mx-auto flex items-center justify-center font-bold mb-1.5">2</div>
+                                <div class="font-bold text-xs text-slate-800">Neck (PANet / FPN)</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">Combina escalas (objetos grandes y pequeños)</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200 shadow-xs">
+                                <div class="w-8 h-8 rounded-lg bg-skyBrand-100 text-skyBrand-700 mx-auto flex items-center justify-center font-bold mb-1.5">3</div>
+                                <div class="font-bold text-xs text-slate-800">Head (Detección)</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">Predice coordenadas y clases</div>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200 shadow-xs">
+                                <div class="w-8 h-8 rounded-lg bg-skyBrand-600 text-white mx-auto flex items-center justify-center font-bold mb-1.5">4</div>
+                                <div class="font-bold text-xs text-slate-800">NMS (Filtro Final)</div>
+                                <div class="text-[10px] text-slate-500 mt-0.5">Elimina cajas duplicadas con IoU</div>
+                            </div>
+                        </div>
+
+                        <!-- Escena Interactiva con Slider de Umbral de Confianza (Confidence Threshold) -->
+                        <div class="bg-white p-4 rounded-2xl border border-skyBrand-200 space-y-3">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div>
+                                    <h4 class="text-xs font-extrabold text-slate-800">
+                                        Laboratorio Interactivo: Umbral de Confianza (Confidence Threshold) e IoU
+                                    </h4>
+                                    <p class="text-[11px] text-slate-500">
+                                        Desliza el umbral para filtrar qué detecciones muestra <strong>yolov8n.pt</strong> en la escena industrial.
+                                    </p>
+                                </div>
+                                <div class="flex items-center gap-2 bg-skyBrand-50 px-3 py-1.5 rounded-xl border border-skyBrand-200">
+                                    <span class="text-xs font-bold text-skyBrand-900">Umbral Confianza:</span>
+                                    <span id="lbl-conf-threshold" class="text-sm font-black text-skyBrand-600 font-mono">0.50 (50%)</span>
+                                </div>
+                            </div>
+
+                            <input type="range" id="slider-conf-threshold" min="0.20" max="0.95" step="0.05" value="0.50" oninput="updateYoloThreshold()" class="w-full accent-skyBrand-600 cursor-pointer h-2 bg-skyBrand-100 rounded-lg">
+
+                            <!-- Canvas de Escena Industrial (Personas y Autos) -->
+                            <div class="relative bg-slate-900 rounded-xl overflow-hidden border border-skyBrand-200 h-60 w-full">
+                                <canvas id="canvas-yolo-demo" class="w-full h-full block"></canvas>
+                            </div>
+
+                            <div class="flex flex-wrap justify-between items-center text-xs text-slate-600 gap-2 pt-1">
+                                <div>
+                                    Objetos visibles sobre el umbral: <strong id="lbl-visible-objs" class="text-skyBrand-700 font-mono">4</strong> de 5 candidatos
+                                </div>
+                                <div class="text-[11px] font-mono bg-skyBrand-50 px-2.5 py-1 rounded border border-skyBrand-200 text-skyBrand-800">
+                                    IoU (Intersection over Union) = Área Intersección / Área Unión
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2B: MODELOS PRE-ENTRENADOS, PESOS (.PT) Y DATASET COCO -->
+            <section class="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-skyBrand-200 space-y-6">
+                <div class="border-b border-skyBrand-100 pb-4">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-skyBrand-600 bg-skyBrand-50 px-2.5 py-1 rounded-lg border border-skyBrand-200">
+                        Transfer Learning y Pesos Neuronales
+                    </span>
+                    <h2 class="text-lg md:text-2xl font-extrabold text-slate-800 mt-1.5">
+                        ¿Qué es un Modelo Pre-entrenado? (YOLOv8n + Dataset COCO)
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-500 mt-0.5">
+                        Comprende cómo se almacenan los conocimientos de una red neuronal en archivos de pesos y qué clases reconoce de fábrica.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    
+                    <!-- Tarjeta 1: ¿Qué es el Pre-entrenamiento? -->
+                    <div class="bg-skyBrand-50/70 p-5 rounded-2xl border border-skyBrand-200 space-y-2.5">
+                        <div class="w-10 h-10 rounded-xl bg-skyBrand-600 text-white flex items-center justify-center text-lg shadow-xs">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3 class="font-extrabold text-sm text-skyBrand-900">1. Concepto de Modelo Pre-entrenado</h3>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            Entrenar una red neuronal desde cero requiere millones de imágenes y semanas de cómputo en GPUs costosas. Un <strong>modelo pre-entrenado</strong> ya pasó por ese proceso: sus millones de neuronas ya aprendieron a identificar formas, contornos, sombras y objetos comunes.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 2: Archivo de Pesos yolov8n.pt -->
+                    <div class="bg-skyBrand-50/70 p-5 rounded-2xl border border-skyBrand-200 space-y-2.5">
+                        <div class="w-10 h-10 rounded-xl bg-skyBrand-600 text-white flex items-center justify-center text-lg shadow-xs">
+                            <i class="fa-solid fa-file-code"></i>
+                        </div>
+                        <h3 class="font-extrabold text-sm text-skyBrand-900">2. Archivo de Pesos (<code>yolov8n.pt</code>)</h3>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            La extensión <strong><code>.pt</code> (PyTorch)</strong> guarda los parámetros numéricos (pesos sinápticos y sesgos) ajustados durante el entrenamiento. La letra <strong>"n" (Nano)</strong> indica que es la versión más ligera (~6.2 MB y 3.2M parámetros), diseñada para correr con baja latencia en servidores o dispositivos IoT/Edge.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 3: Dataset COCO y Aclaración Técnica -->
+                    <div class="bg-skyBrand-50/70 p-5 rounded-2xl border border-skyBrand-200 space-y-2.5">
+                        <div class="w-10 h-10 rounded-xl bg-skyBrand-600 text-white flex items-center justify-center text-lg shadow-xs">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <h3 class="font-extrabold text-sm text-skyBrand-900">3. Dataset COCO (80 Clases Nativas)</h3>
+                        <p class="text-xs text-slate-700 leading-relaxed">
+                            El modelo base fue entrenado con <strong>MS COCO</strong> (330,000 imágenes en 80 categorías cotidianas como <code>persona</code>, <code>auto</code>, <code>bicicleta</code>, <code>motocicleta</code>).
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Nota Importante sobre Detección Nativa vs Transfer Learning -->
+                <div class="bg-white border-l-4 border-skyBrand-600 p-4 rounded-2xl shadow-xs border border-skyBrand-200 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <div class="p-3 bg-skyBrand-100 text-skyBrand-700 rounded-xl text-xl flex-shrink-0">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div class="text-xs text-slate-700 space-y-1">
+                        <div class="font-extrabold text-skyBrand-900 text-sm">
+                            Punto Clave para Sustentación SENA: Clases Nativas vs. Transfer Learning
+                        </div>
+                        <p class="leading-relaxed">
+                            El modelo estándar <strong><code>yolov8n.pt</code></strong> detecta de forma nativa las 80 clases de COCO (por ejemplo, <strong>persona</strong> y <strong>auto</strong> en nuestra escena industrial), pero <strong>NO detecta cascos ni chalecos de seguridad de manera nativa</strong>. Para detectar Elementos de Protección Personal (EPP), se aplica <strong>Transfer Learning (Fine-Tuning)</strong>: se congelan las capas iniciales del modelo pre-entrenado y se re-entrena únicamente la capa final con un dataset etiquetado de cascos y chalecos.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2C: PRUEBA EN VIVO CON WEBCAM (DETECCIÓN REAL EN EL NAVEGADOR) -->
+            <section class="bg-white rounded-3xl p-5 md:p-7 shadow-sm border-2 border-skyBrand-300 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-skyBrand-100 pb-4 gap-3">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-white bg-skyBrand-600 px-2.5 py-1 rounded-lg shadow-xs">
+                            Demostración Práctica en Tiempo Real
+                        </span>
+                        <h2 class="text-lg md:text-2xl font-extrabold text-slate-800 mt-1.5 flex items-center gap-2">
+                            <i class="fa-solid fa-camera text-skyBrand-600"></i> Prueba en Vivo con tu Webcam (Detección Real COCO)
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-500 mt-0.5">
+                            Enciende tu cámara web para probar un modelo pre-entrenado con las mismas 80 clases de COCO directamente en tu navegador (sin enviar video a servidores externos).
+                        </p>
+                    </div>
+
+                    <!-- Botones de Control de Webcam -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="startWebcamDetection()" id="btn-start-webcam" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-skyBrand-600 hover:bg-skyBrand-700 text-white shadow-md transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-video"></i>
+                            <span>Encender Webcam</span>
+                        </button>
+                        <button onclick="stopWebcamDetection()" id="btn-stop-webcam" disabled class="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-200 text-slate-400 cursor-not-allowed transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-video-slash"></i>
+                            <span>Detener Webcam</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mensaje de Estado / Error de Cámara -->
+                <div id="webcam-status-banner" class="bg-skyBrand-50 border border-skyBrand-200 rounded-2xl p-3.5 text-xs text-skyBrand-900 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5">
+                        <i id="webcam-status-icon" class="fa-solid fa-circle-info text-skyBrand-600 text-base"></i>
+                        <span id="webcam-status-text" class="font-medium">
+                            Cámara en espera. Haz clic en <strong>"Encender Webcam"</strong> y acepta el permiso del navegador para iniciar la inferencia en vivo.
+                        </span>
+                    </div>
+                    <span id="webcam-model-badge" class="text-[10px] font-mono font-bold bg-white text-skyBrand-700 border border-skyBrand-200 px-2.5 py-1 rounded-lg whitespace-nowrap">
+                        Modelo COCO: Listo para cargar
+                    </span>
+                </div>
+
+                <!-- Contenedor Principal de Video + Panel de Métricas en Vivo -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    
+                    <!-- Lienzo de Video y Bounding Boxes (2 columnas) -->
+                    <div class="lg:col-span-2 relative bg-slate-900 rounded-2xl overflow-hidden border-2 border-skyBrand-200 shadow-inner aspect-video flex items-center justify-center">
+                        <!-- Placeholder cuando la cámara está apagada -->
+                        <div id="webcam-placeholder" class="text-center p-6 space-y-3">
+                            <div class="w-16 h-16 rounded-2xl bg-skyBrand-500/20 border border-skyBrand-400/40 text-skyBrand-300 mx-auto flex items-center justify-center text-3xl">
+                                <i class="fa-solid fa-camera-retro"></i>
+                            </div>
+                            <div class="text-white font-bold text-sm">Vista Previa de Cámara Web Apagada</div>
+                            <p class="text-xs text-slate-400 max-w-md mx-auto">
+                                Al activar la webcam, se dibujarán cuadros delimitadores alrededor de objetos reconocidos (personas, celulares, tazas, sillas, botellas, etc.).
+                            </p>
+                        </div>
+
+                        <!-- Elemento Video HTML5 (oculto visualmente, dibujado en el canvas) -->
+                        <video id="webcam-video" autoplay playsinline muted class="hidden"></video>
+
+                        <!-- Canvas Superpuesto donde se dibuja el frame + cajas delimitadoras -->
+                        <canvas id="webcam-canvas" class="w-full h-full object-contain hidden"></canvas>
+                    </div>
+
+                    <!-- Panel Lateral de Telemetría e Inferencia en Tiempo Real -->
+                    <div class="bg-skyBrand-50/80 p-5 rounded-2xl border border-skyBrand-200 space-y-4">
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-skyBrand-900 border-b border-skyBrand-200 pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-gauge-high text-skyBrand-600"></i> Telemetría de Inferencia
+                        </h3>
+
+                        <!-- Indicadores Numéricos -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 block">Velocidad</span>
+                                <span id="webcam-fps" class="text-xl font-black text-skyBrand-700 font-mono">0 FPS</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-xl border border-skyBrand-200">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 block">Inferencia</span>
+                                <span id="webcam-latency" class="text-xl font-black text-skyBrand-700 font-mono">0 ms</span>
+                            </div>
+                        </div>
+
+                        <!-- Control de Umbral de Confianza en Vivo -->
+                        <div class="bg-white p-3.5 rounded-xl border border-skyBrand-200 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-slate-700">Confianza Mínima:</span>
+                                <span id="webcam-conf-lbl" class="font-mono font-black text-skyBrand-600">50%</span>
+                            </div>
+                            <input type="range" id="webcam-conf-slider" min="0.20" max="0.90" step="0.05" value="0.50" oninput="updateWebcamConfLabel()" class="w-full accent-skyBrand-600 cursor-pointer h-1.5 bg-skyBrand-100 rounded-lg">
+                            <p class="text-[10px] text-slate-500">
+                                Filtra detecciones dudosas en tiempo real subiendo o bajando el porcentaje.
+                            </p>
+                        </div>
+
+                        <!-- Lista de Objetos Detectados en el Cuadro Actual -->
+                        <div class="bg-white p-3.5 rounded-xl border border-skyBrand-200 space-y-2">
+                            <div class="flex justify-between items-center text-xs">
+                                <span class="font-bold text-slate-700">Objetos en Escena:</span>
+                                <span id="webcam-obj-count" class="bg-skyBrand-100 text-skyBrand-800 font-mono font-bold px-2 py-0.5 rounded-full text-[11px]">0</span>
+                            </div>
+                            <div id="webcam-detections-list" class="max-h-32 overflow-y-auto space-y-1 text-xs custom-scrollbar pr-1">
+                                <div class="text-slate-400 italic text-[11px]">Sin detecciones activas...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- SECCIÓN TRANSVERSAL: AUTOEVALUACIÓN RÁPIDA SENA                           -->
+        <!-- ========================================================================= -->
+        <section id="section-quiz" class="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-skyBrand-200 space-y-5">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-skyBrand-100 pb-4 gap-2">
+                <div>
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-skyBrand-600 bg-skyBrand-50 px-2.5 py-1 rounded-lg border border-skyBrand-200">
+                        Comprobación de Conocimientos
+                    </span>
+                    <h2 class="text-lg md:text-xl font-extrabold text-slate-800 mt-1">
+                        Autoevaluación Rápida – Redes y YOLOv8n
+                    </h2>
+                </div>
+                <div class="bg-skyBrand-50 border border-skyBrand-200 px-3.5 py-1.5 rounded-xl text-xs font-bold text-skyBrand-900">
+                    Puntaje: <span id="quiz-score" class="text-skyBrand-600 font-black">0</span> / 3
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- Pregunta 1 -->
+                <div class="bg-skyBrand-50/50 p-4 rounded-2xl border border-skyBrand-200 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-skyBrand-600 uppercase">Pregunta 1 · Alcance de Red</span>
+                        <p class="font-bold text-xs text-slate-800 mt-1">
+                            ¿Qué tipo de red conecta una planta industrial en Bogotá con una sede de monitoreo en otra ciudad a través de un operador ISP?
+                        </p>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                        <button onclick="answerQuiz(1, false, this)" class="q1-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            A) Red PAN (Personal Area Network)
+                        </button>
+                        <button onclick="answerQuiz(1, true, this)" class="q1-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            B) Red WAN (Wide Area Network)
+                        </button>
+                        <button onclick="answerQuiz(1, false, this)" class="q1-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            C) Red Bluetooth de Capa 1
+                        </button>
+                    </div>
+                    <div id="q1-msg" class="text-[11px] font-bold hidden"></div>
+                </div>
+
+                <!-- Pregunta 2 -->
+                <div class="bg-skyBrand-50/50 p-4 rounded-2xl border border-skyBrand-200 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-skyBrand-600 uppercase">Pregunta 2 · Equipos de Red</span>
+                        <p class="font-bold text-xs text-slate-800 mt-1">
+                            ¿Cuál es la diferencia fundamental entre un Switch y un Router en nuestra arquitectura de videovigilancia?
+                        </p>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                        <button onclick="answerQuiz(2, true, this)" class="q2-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            A) El Switch conmuta tramas MAC en la LAN (Capa 2) y el Router enruta paquetes IP entre redes distintas (Capa 3).
+                        </button>
+                        <button onclick="answerQuiz(2, false, this)" class="q2-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            B) El Switch ejecuta el modelo YOLO y el Router graba el video.
+                        </button>
+                        <button onclick="answerQuiz(2, false, this)" class="q2-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            C) Ambos funcionan exactamente igual sin direcciones IP ni MAC.
+                        </button>
+                    </div>
+                    <div id="q2-msg" class="text-[11px] font-bold hidden"></div>
+                </div>
+
+                <!-- Pregunta 3 -->
+                <div class="bg-skyBrand-50/50 p-4 rounded-2xl border border-skyBrand-200 flex flex-col justify-between space-y-3">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-skyBrand-600 uppercase">Pregunta 3 · YOLOv8n Pre-entrenado</span>
+                        <p class="font-bold text-xs text-slate-800 mt-1">
+                            ¿Por qué <code>yolov8n.pt</code> detecta personas y autos inmediatamente, pero requiere Transfer Learning para detectar cascos?
+                        </p>
+                    </div>
+                    <div class="space-y-1.5 text-xs">
+                        <button onclick="answerQuiz(3, false, this)" class="q3-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            A) Porque los cascos son invisibles para las cámaras IP.
+                        </button>
+                        <button onclick="answerQuiz(3, false, this)" class="q3-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            B) Porque YOLO solo funciona con imágenes en blanco y negro.
+                        </button>
+                        <button onclick="answerQuiz(3, true, this)" class="q3-btn w-full text-left p-2.5 rounded-xl bg-white border border-skyBrand-200 hover:border-skyBrand-500 font-medium transition-all">
+                            C) Porque fue pre-entrenado con las 80 clases estándar del dataset COCO, las cuales incluyen persona y auto, pero no EPP.
+                        </button>
+                    </div>
+                    <div id="q3-msg" class="text-[11px] font-bold hidden"></div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== PIE DE PÁGINA ==================== -->
+    <footer class="bg-white border-t border-skyBrand-200 py-4 px-6 mt-8">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
+            <div class="font-semibold text-skyBrand-800">
+                Proyecto Formativo SENA · Telecomunicaciones y Visión Artificial (YOLOv8n)
+            </div>
+            <div>
+                Material didáctico interactivo · Simulación educativa en tiempo real
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== LÓGICA JAVASCRIPT INTERACTIVA ==================== -->
+    <script>
+        // 1. NAVEGACIÓN ENTRE PESTAÑAS PRINCIPALES
+        function switchMainTab(tab) {
+            const panelRedes = document.getElementById('panel-redes');
+            const panelYolo = document.getElementById('panel-yolo');
+            const btnRedes = document.getElementById('tab-btn-redes');
+            const btnYolo = document.getElementById('tab-btn-yolo');
+
+            if (tab === 'redes') {
+                // Detener la webcam automáticamente si el usuario cambia a la pestaña de Redes
+                if (webcamRunning) {
+                    stopWebcamDetection();
+                }
+                panelRedes.classList.remove('hidden');
+                panelYolo.classList.add('hidden');
+                btnRedes.classList.add('active');
+                btnRedes.classList.remove('text-skyBrand-800', 'hover:bg-white');
+                btnYolo.classList.remove('active');
+                btnYolo.classList.add('text-skyBrand-800', 'hover:bg-white');
+            } else {
+                panelRedes.classList.add('hidden');
+                panelYolo.classList.remove('hidden');
+                btnYolo.classList.add('active');
+                btnYolo.classList.remove('text-skyBrand-800', 'hover:bg-white');
+                btnRedes.classList.remove('active');
+                btnRedes.classList.add('text-skyBrand-800', 'hover:bg-white');
+                drawYoloDemoCanvas();
+            }
+        }
+
+        function scrollToQuiz() {
+            document.getElementById('section-quiz').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 2. EXPLORADOR DE ALCANCE DE REDES (PAN, LAN, MAN, WAN)
+        const networkScopes = {
+            PAN: {
+                title: "PAN – Personal Area Network (Red de Área Personal)",
+                badge: "Radio: 1 m – 10 m",
+                desc: "Interconecta dispositivos personales cercanos a un usuario individual. Es ideal para periféricos inalámbricos, sensores portátiles IoT y sincronización de corto alcance sin infraestructura cableada compleja.",
+                tech: "Bluetooth, Zigbee, NFC, USB",
+                latency: "1 ms – 15 ms",
+                example: "Sensores biométricos de operario y tablet",
+                svg: `
+                    <svg viewBox="0 0 240 150" class="w-full h-full">
+                        <circle cx="120" cy="75" r="58" fill="#e0f2fe" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,5"/>
+                        <circle cx="120" cy="75" r="34" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5"/>
+                        <circle cx="120" cy="75" r="16" fill="#0284c7"/>
+                        <text x="120" y="79" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">PC/Móvil</text>
+                        <rect x="45" y="30" width="44" height="22" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+                        <text x="67" y="44" fill="#0369a1" font-size="8" font-weight="bold" text-anchor="middle">Sensor IoT</text>
+                        <rect x="152" y="98" width="46" height="22" rx="6" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+                        <text x="175" y="112" fill="#0369a1" font-size="8" font-weight="bold" text-anchor="middle">Bluetooth</text>
+                        <line x1="89" y1="45" x2="106" y2="63" stroke="#0284c7" stroke-width="2"/>
+                        <line x1="152" y1="103" x2="134" y2="87" stroke="#0284c7" stroke-width="2"/>
+                    </svg>
+                `
+            },
+            LAN: {
+                title: "LAN – Local Area Network (Red de Área Local)",
+                badge: "Radio: 10 m – 1 km (Edificio)",
+                desc: "Red privada de alta velocidad que conecta computadores, cámaras IP, switches y servidores dentro de un mismo edificio, laboratorio o planta industrial. Ofrece tasas de transferencia de 1 Gbps a 10 Gbps con latencia mínima.",
+                tech: "Ethernet (IEEE 802.3), Wi-Fi (802.11), VLANs",
+                latency: "< 1 ms – 5 ms",
+                example: "Cámaras de planta, Switch 2960 y Servidor YOLOv8n",
+                svg: `
+                    <svg viewBox="0 0 240 150" class="w-full h-full">
+                        <rect x="20" y="15" width="200" height="120" rx="14" fill="#f0f9ff" stroke="#0284c7" stroke-width="2"/>
+                        <text x="120" y="32" fill="#0369a1" font-size="9" font-weight="bold" text-anchor="middle">PLANTA INDUSTRIAL / LABORATORIO SENA</text>
+                        <rect x="90" y="62" width="60" height="24" rx="5" fill="#0284c7"/>
+                        <text x="120" y="77" fill="#ffffff" font-size="9" font-weight="bold" text-anchor="middle">SWITCH LAN</text>
+                        <rect x="32" y="45" width="42" height="20" rx="4" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+                        <text x="53" y="58" fill="#0f172a" font-size="8" font-weight="bold" text-anchor="middle">Cámara IP</text>
+                        <rect x="32" y="95" width="42" height="20" rx="4" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+                        <text x="53" y="108" fill="#0f172a" font-size="8" font-weight="bold" text-anchor="middle">Cliente PC</text>
+                        <rect x="166" y="70" width="44" height="22" rx="4" fill="#075985"/>
+                        <text x="188" y="84" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Servidor IA</text>
+                        <line x1="74" y1="55" x2="90" y2="70" stroke="#0284c7" stroke-width="2"/>
+                        <line x1="74" y1="105" x2="90" y2="80" stroke="#0284c7" stroke-width="2"/>
+                        <line x1="150" y1="76" x2="166" y2="80" stroke="#0284c7" stroke-width="2"/>
+                    </svg>
+                `
+            },
+            MAN: {
+                title: "MAN – Metropolitan Area Network (Red de Área Metropolitana)",
+                badge: "Radio: 5 km – 50 km (Ciudad)",
+                desc: "Interconecta múltiples redes LAN ubicadas en diferentes edificios o sedes dentro de una misma ciudad o área metropolitana mediante anillos de fibra óptica de alta capacidad.",
+                tech: "Fibra Óptica Metro Ethernet, MPLS, GPON",
+                latency: "5 ms – 20 ms",
+                example: "Interconexión entre distintos centros SENA de Bogotá",
+                svg: `
+                    <svg viewBox="0 0 240 150" class="w-full h-full">
+                        <ellipse cx="120" cy="78" rx="75" ry="42" fill="none" stroke="#38bdf8" stroke-width="4"/>
+                        <text x="120" y="81" fill="#0284c7" font-size="9" font-weight="bold" text-anchor="middle">ANILLO FIBRA ÓPTICA MAN</text>
+                        <rect x="92" y="20" width="56" height="22" rx="5" fill="#0284c7"/>
+                        <text x="120" y="34" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Sede Norte</text>
+                        <rect x="25" y="70" width="52" height="22" rx="5" fill="#0369a1"/>
+                        <text x="51" y="84" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Planta Sur</text>
+                        <rect x="163" y="70" width="54" height="22" rx="5" fill="#0369a1"/>
+                        <text x="190" y="84" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Centro Control</text>
+                    </svg>
+                `
+            },
+            WAN: {
+                title: "WAN – Wide Area Network (Red de Área Amplia)",
+                badge: "Alcance: Nacional / Global (Internet)",
+                desc: "Abarca grandes distancias geográficas conectando redes LAN y MAN entre ciudades, países y continentes. Utiliza routers de borde, enlaces de operadores (ISP), cables submarinos y satélites.",
+                tech: "IPv4/IPv6, BGP, Fibra Submarina, 5G, Satélite",
+                latency: "20 ms – 150+ ms",
+                example: "Acceso remoto al video de seguridad desde otra ciudad",
+                svg: `
+                    <svg viewBox="0 0 240 150" class="w-full h-full">
+                        <path d="M85,65 Q120,25 155,65 Q185,75 165,105 Q120,120 75,105 Q55,75 85,65 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+                        <text x="120" y="76" fill="#0369a1" font-size="10" font-weight="bold" text-anchor="middle">NUBE WAN / ISP</text>
+                        <text x="120" y="89" fill="#0284c7" font-size="8" text-anchor="middle">Enrutamiento IP Global</text>
+                        <rect x="14" y="65" width="44" height="24" rx="5" fill="#0284c7"/>
+                        <text x="36" y="80" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Router A</text>
+                        <rect x="182" y="65" width="44" height="24" rx="5" fill="#075985"/>
+                        <text x="204" y="80" fill="#ffffff" font-size="8" font-weight="bold" text-anchor="middle">Router B</text>
+                        <line x1="58" y1="77" x2="76" y2="77" stroke="#0284c7" stroke-width="2.5"/>
+                        <line x1="166" y1="77" x2="182" y2="77" stroke="#0284c7" stroke-width="2.5"/>
+                    </svg>
+                `
+            }
+        };
+
+        function selectNetworkScope(scope) {
+            const data = networkScopes[scope];
+            ['PAN', 'LAN', 'MAN', 'WAN'].forEach(key => {
+                const btn = document.getElementById(`scope-btn-${key}`);
+                if (key === scope) {
+                    btn.classList.add('active');
+                    btn.classList.remove('text-skyBrand-900', 'bg-white');
+                } else {
+                    btn.classList.remove('active');
+                    btn.classList.add('text-skyBrand-900', 'bg-white');
+                }
+            });
+
+            document.getElementById('scope-title').innerText = data.title;
+            document.getElementById('scope-badge').innerText = data.badge;
+            document.getElementById('scope-desc').innerText = data.desc;
+            document.getElementById('scope-tech').innerText = data.tech;
+            document.getElementById('scope-latency').innerText = data.latency;
+            document.getElementById('scope-example').innerText = data.example;
+            document.getElementById('scope-svg-container').innerHTML = data.svg;
+        }
+
+        // 3. FICHA DE EQUIPOS DE RED (SWITCH, ROUTER, SERVIDOR, CLIENTE)
+        const deviceInfo = {
+            SWITCH: {
+                layer: "CAPA 2 – ENLACE DE DATOS",
+                title: "Switch Industrial (Conmutador de Red)",
+                body: "Un <strong>Switch</strong> opera principalmente en la <strong>Capa 2 (Enlace de Datos)</strong> del modelo OSI. Aprende las <strong>direcciones físicas MAC</strong> de cada dispositivo conectado y construye una tabla CAM para enviar las tramas únicamente al puerto de destino exacto, evitando colisiones y maximizando el ancho de banda. Además, permite crear redes virtuales segmentadas llamadas <strong>VLANs (IEEE 802.1Q)</strong>.",
+                id: "Dirección MAC (48 bits)",
+                pdu: "Trama (Frame Ethernet)",
+                role: "Une Cámara, Servidor y Router"
+            },
+            ROUTER: {
+                layer: "CAPA 3 – RED (ENRUTAMIENTO)",
+                title: "Router (Enrutador de Borde y QoS)",
+                body: "Un <strong>Router</strong> opera en la <strong>Capa 3 (Red)</strong> del modelo OSI. Su función es interconectar redes lógicamente diferentes (por ejemplo, una LAN local con una red WAN o entre distintas VLANs mediante <em>Router-on-a-Stick</em>). Examina las <strong>direcciones IP</strong>, elige la mejor ruta, realiza traducción de direcciones (<strong>NAT</strong>) y administra colas de prioridad <strong>QoS (DSCP)</strong>.",
+                id: "Dirección IP (IPv4 / IPv6)",
+                pdu: "Paquete IP (Packet)",
+                role: "Conecta LAN a WAN y gestiona QoS"
+            },
+            SERVIDOR: {
+                layer: "CAPA 7 – APLICACIÓN (HOST)",
+                title: "Servidor de Procesamiento e Inferencia IA",
+                body: "Un <strong>Servidor</strong> es un computador optimizado para operar 24/7 proveyendo servicios a otros equipos de la red. En nuestro sistema SENA, recibe el flujo de video RTSP de las cámaras, ejecuta el modelo neuronal <strong>YOLOv8n</strong> para detectar objetos, codifica el video en H.264/H.265 y lo transmite hacia los clientes autorizados.",
+                id: "IP Estática + Puerto (ej. :554)",
+                pdu: "Segmento / Flujo de Datos",
+                role: "Aloja y ejecuta yolov8n.pt"
+            },
+            CLIENTE: {
+                layer: "CAPA 7 – APLICACIÓN (TERMINAL)",
+                title: "Cliente de Monitoreo Remoto (Estación VLC)",
+                body: "Un <strong>Cliente</strong> es el dispositivo final (PC de sala de control, portátil o monitor industrial) que inicia peticiones hacia un servidor para consumir un servicio. Recibe los paquetes RTP desde la red, los almacena brevemente en un búfer anti-jitter, decodifica el video y muestra en pantalla las detecciones en tiempo real.",
+                id: "IP Dinámica/Fija + App Cliente",
+                pdu: "Datos de Usuario / Video",
+                role: "Visualiza stream y alertas YOLO"
+            }
+        };
+
+        function selectDevice(dev) {
+            const info = deviceInfo[dev];
+            ['SWITCH', 'ROUTER', 'SERVIDOR', 'CLIENTE'].forEach(k => {
+                const card = document.getElementById(`dev-card-${k}`);
+                if (k === dev) card.classList.add('active');
+                else card.classList.remove('active');
+            });
+
+            document.getElementById('dev-detail-layer').innerText = info.layer;
+            document.getElementById('dev-detail-title').innerText = info.title;
+            document.getElementById('dev-detail-body').innerHTML = info.body;
+            document.getElementById('dev-spec-id').innerText = info.id;
+            document.getElementById('dev-spec-pdu').innerText = info.pdu;
+            document.getElementById('dev-spec-role').innerText = info.role;
+        }
+
+        // 4. SIMULADOR ANIMADO DE PAQUETES (LAN vs WAN)
+        let activePacket = null;
+
+        function triggerPacketSim(mode) {
+            const narrator = document.getElementById('net-sim-narrator');
+            if (mode === 'LAN') {
+                activePacket = {
+                    mode: 'LAN',
+                    progress: 0,
+                    label: 'TRAMA MAC (LAN)',
+                    color: '#0284c7'
+                };
+                narrator.innerHTML = `<i class="fa-solid fa-arrows-left-right text-skyBrand-600 text-base flex-shrink-0"></i>
+                <span><strong>Tráfico LAN (Capa 2):</strong> El Servidor envía una <strong>Trama Ethernet</strong> con dirección MAC destino al <strong>Switch</strong>. El Switch lee su tabla MAC y la entrega directamente al Cliente local sin necesidad de salir a Internet.</span>`;
+            } else {
+                activePacket = {
+                    mode: 'WAN',
+                    progress: 0,
+                    label: 'PAQUETE IP (WAN)',
+                    color: '#0369a1'
+                };
+                narrator.innerHTML = `<i class="fa-solid fa-globe text-skyBrand-600 text-base flex-shrink-0"></i>
+                <span><strong>Tráfico WAN (Capa 3):</strong> El Servidor envía un <strong>Paquete IP</strong> hacia una red externa. Pasa por el Switch hacia el <strong>Router</strong>, el cual aplica NAT + QoS y lo enruta a través de la nube WAN hasta el Cliente remoto.</span>`;
+            }
+        }
+
+        function renderNetSimCanvas() {
+            const canvas = document.getElementById('canvas-net-sim');
+            if (!canvas) return;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width > 0 && rect.height > 0) {
+                if (canvas.width !== Math.round(rect.width * dpr) || canvas.height !== Math.round(rect.height * dpr)) {
+                    canvas.width = Math.round(rect.width * dpr);
+                    canvas.height = Math.round(rect.height * dpr);
+                }
+            }
+            const ctx = canvas.getContext('2d');
+            ctx.resetTransform();
+            ctx.scale(dpr, dpr);
+
+            const w = rect.width;
+            const h = rect.height;
+            ctx.clearRect(0, 0, w, h);
+
+            // Coordenadas de los 4 nodos
+            const serverPos = { x: w * 0.14, y: h * 0.52, label: 'Servidor IA', sub: '192.168.10.50' };
+            const switchPos = { x: w * 0.38, y: h * 0.52, label: 'Switch L2', sub: 'Tabla MAC' };
+            const routerPos = { x: w * 0.63, y: h * 0.30, label: 'Router L3', sub: 'IP / NAT / WAN' };
+            const clientLocalPos = { x: w * 0.63, y: h * 0.76, label: 'Cliente LAN', sub: 'Red Local' };
+            const clientWanPos = { x: w * 0.87, y: h * 0.30, label: 'Cliente WAN', sub: 'Remoto Internet' };
+
+            // Dibujar enlaces
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#bae6fd';
+            ctx.beginPath();
+            ctx.moveTo(serverPos.x, serverPos.y);
+            ctx.lineTo(switchPos.x, switchPos.y);
+            ctx.lineTo(clientLocalPos.x, clientLocalPos.y);
+            ctx.moveTo(switchPos.x, switchPos.y);
+            ctx.lineTo(routerPos.x, routerPos.y);
+            ctx.lineTo(clientWanPos.x, clientWanPos.y);
+            ctx.stroke();
+
+            // Dibujar nodos
+            const nodes = [serverPos, switchPos, routerPos, clientLocalPos, clientWanPos];
+            nodes.forEach((n, idx) => {
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = idx === 2 ? '#0369a1' : '#0284c7';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.roundRect(n.x - 42, n.y - 20, 84, 40, 10);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#0c4a6e';
+                ctx.font = 'bold 11px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(n.label, n.x, n.y - 2);
+
+                ctx.fillStyle = '#64748b';
+                ctx.font = '9px monospace';
+                ctx.fillText(n.sub, n.x, n.y + 11);
+            });
+
+            // Animar paquete activo
+            if (activePacket) {
+                activePacket.progress += 0.012;
+                let px, py;
+
+                if (activePacket.mode === 'LAN') {
+                    if (activePacket.progress <= 0.5) {
+                        const t = activePacket.progress * 2;
+                        px = serverPos.x + (switchPos.x - serverPos.x) * t;
+                        py = serverPos.y + (switchPos.y - serverPos.y) * t;
+                    } else if (activePacket.progress <= 1.0) {
+                        const t = (activePacket.progress - 0.5) * 2;
+                        px = switchPos.x + (clientLocalPos.x - switchPos.x) * t;
+                        py = switchPos.y + (clientLocalPos.y - switchPos.y) * t;
+                    } else {
+                        activePacket = null;
+                    }
+                } else {
+                    if (activePacket.progress <= 0.33) {
+                        const t = activePacket.progress / 0.33;
+                        px = serverPos.x + (switchPos.x - serverPos.x) * t;
+                        py = serverPos.y + (switchPos.y - serverPos.y) * t;
+                    } else if (activePacket.progress <= 0.66) {
+                        const t = (activePacket.progress - 0.33) / 0.33;
+                        px = switchPos.x + (routerPos.x - switchPos.x) * t;
+                        py = switchPos.y + (routerPos.y - switchPos.y) * t;
+                    } else if (activePacket.progress <= 1.0) {
+                        const t = (activePacket.progress - 0.66) / 0.34;
+                        px = routerPos.x + (clientWanPos.x - routerPos.x) * t;
+                        py = routerPos.y + (clientWanPos.y - routerPos.y) * t;
+                    } else {
+                        activePacket = null;
+                    }
+                }
+
+                if (activePacket && px !== undefined) {
+                    ctx.fillStyle = '#0284c7';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.fillStyle = '#0c4a6e';
+                    ctx.font = 'bold 10px monospace';
+                    ctx.fillText(activePacket.label, px, py - 14);
+                }
+            }
+
+            requestAnimationFrame(renderNetSimCanvas);
+        }
+
+        // 5. PESTAÑA 2: MODO ARQUITECTURA YOLO VS TRADICIONAL
+        function setYoloArchMode(mode) {
+            const btnYolo = document.getElementById('btn-arch-yolo');
+            const btnTrad = document.getElementById('btn-arch-trad');
+
+            if (mode === 'YOLO') {
+                btnYolo.className = "px-3.5 py-1.5 rounded-lg bg-skyBrand-600 text-white shadow";
+                btnTrad.className = "px-3.5 py-1.5 rounded-lg text-skyBrand-800 hover:bg-white";
+                document.getElementById('yolo-arch-badge').innerText = "SINGLE-STAGE DETECTOR (TIEMPO REAL)";
+                document.getElementById('yolo-arch-title').innerText = "Cómo funciona YOLO en una sola mirada";
+                document.getElementById('yolo-arch-desc').innerHTML = "YOLO divide la imagen de entrada en una cuadrícula de <strong>S × S celdas</strong>. Cada celda predice simultáneamente múltiples <strong>cuadros delimitadores (Bounding Boxes)</strong>, un puntaje de confianza y las probabilidades de clase en una única evaluación de red neuronal.";
+                document.getElementById('yolo-arch-speed').innerText = "30 – 120+ FPS (Tiempo Real)";
+                document.getElementById('yolo-arch-passes').innerText = "1 única pasada (End-to-End)";
+            } else {
+                btnTrad.className = "px-3.5 py-1.5 rounded-lg bg-skyBrand-600 text-white shadow";
+                btnYolo.className = "px-3.5 py-1.5 rounded-lg text-skyBrand-800 hover:bg-white";
+                document.getElementById('yolo-arch-badge').innerText = "TWO-STAGE DETECTOR (R-CNN / SLIDING WINDOW)";
+                document.getElementById('yolo-arch-title').innerText = "Detectores Tradicionales de Dos Etapas";
+                document.getElementById('yolo-arch-desc').innerHTML = "Los algoritmos clásicos (como R-CNN) primero generan miles de <strong>regiones candidatas (Region Proposals)</strong> y luego ejecutan un clasificador neuronal por separado sobre cada recorte. Esto los hace precisos pero muy lentos para videovigilancia en vivo.";
+                document.getElementById('yolo-arch-speed').innerText = "2 – 7 FPS (No apto para video fluido)";
+                document.getElementById('yolo-arch-passes').innerText = "Miles de recortes por imagen";
+            }
+        }
+
+        // 6. CANVAS INTERACTIVO DE UMBRAL DE CONFIANZA YOLO (PERSONAS Y AUTOS - SIN PERROS)
+        const yoloDetections = [
+            { type: 'persona', label: 'persona', conf: 0.95, xPct: 0.16, yPct: 0.36, wPct: 0.08, hPct: 0.36 },
+            { type: 'auto',    label: 'auto',    conf: 0.91, xPct: 0.34, yPct: 0.48, wPct: 0.22, hPct: 0.24 },
+            { type: 'persona', label: 'persona', conf: 0.84, xPct: 0.64, yPct: 0.38, wPct: 0.08, hPct: 0.34 },
+            { type: 'auto',    label: 'auto',    conf: 0.62, xPct: 0.78, yPct: 0.50, wPct: 0.16, hPct: 0.20 },
+            { type: 'persona', label: 'persona', conf: 0.35, xPct: 0.54, yPct: 0.42, wPct: 0.06, hPct: 0.26 }
+        ];
+
+        function updateYoloThreshold() {
+            const val = parseFloat(document.getElementById('slider-conf-threshold').value);
+            document.getElementById('lbl-conf-threshold').innerText = `${val.toFixed(2)} (${Math.round(val * 100)}%)`;
+            drawYoloDemoCanvas();
+        }
+
+        function drawYoloDemoCanvas() {
+            const canvas = document.getElementById('canvas-yolo-demo');
+            if (!canvas) return;
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+
+            canvas.width = Math.round(rect.width * dpr);
+            canvas.height = Math.round(rect.height * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            const w = rect.width;
+            const h = rect.height;
+            const threshold = parseFloat(document.getElementById('slider-conf-threshold').value);
+            const showGrid = document.getElementById('chk-yolo-grid').checked;
+
+            // Fondo Industrial Azul Cielo / Asfalto
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, w, h);
+
+            // Nave industrial estilizada
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(w * 0.05, h * 0.12, w * 0.4, h * 0.45);
+            ctx.fillRect(w * 0.55, h * 0.15, w * 0.38, h * 0.42);
+
+            // Franja azul cielo arquitectónica
+            ctx.fillStyle = '#0284c7';
+            ctx.fillRect(w * 0.05, h * 0.20, w * 0.4, 6);
+            ctx.fillRect(w * 0.55, h * 0.23, w * 0.38, 6);
+
+            // Vía / Pavimento
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(0, h * 0.57, w, h * 0.43);
+            ctx.strokeStyle = '#7dd3fc';
+            ctx.setLineDash([14, 10]);
+            ctx.beginPath();
+            ctx.moveTo(0, h * 0.78);
+            ctx.lineTo(w, h * 0.78);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Dibujar objetos (Personas y Autos únicamente)
+            let visibleCount = 0;
+
+            yoloDetections.forEach(det => {
+                const bx = det.xPct * w;
+                const by = det.yPct * h;
+                const bw = det.wPct * w;
+                const bh = det.hPct * h;
+
+                // Dibujar silueta del objeto
+                if (det.type === 'persona') {
+                    ctx.fillStyle = '#e0f2fe';
+                    ctx.beginPath();
+                    ctx.arc(bx + bw / 2, by + bh * 0.18, bw * 0.26, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillRect(bx + bw * 0.22, by + bh * 0.34, bw * 0.56, bh * 0.58);
+                } else {
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.beginPath();
+                    ctx.roundRect(bx + bw * 0.12, by + bh * 0.15, bw * 0.76, bh * 0.42, 6);
+                    ctx.fill();
+                    ctx.fillStyle = '#0284c7';
+                    ctx.beginPath();
+                    ctx.roundRect(bx + 2, by + bh * 0.45, bw - 4, bh * 0.42, 5);
+                    ctx.fill();
+                    ctx.fillStyle = '#0f172a';
+                    ctx.beginPath(); ctx.arc(bx + bw * 0.24, by + bh * 0.88, 6, 0, Math.PI * 2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(bx + bw * 0.76, by + bh * 0.88, 6, 0, Math.PI * 2); ctx.fill();
+                }
+
+                // Evaluar umbral de confianza
+                if (det.conf >= threshold) {
+                    visibleCount++;
+                    ctx.strokeStyle = '#38bdf8';
+                    ctx.lineWidth = 2.5;
+                    ctx.strokeRect(bx, by, bw, bh);
+
+                    const tag = `${det.label} ${det.conf.toFixed(2)}`;
+                    ctx.font = 'bold 10px monospace';
+                    const tw = ctx.measureText(tag).width;
+
+                    ctx.fillStyle = '#0284c7';
+                    ctx.fillRect(bx, by - 15, tw + 8, 15);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(tag, bx + 4, by - 4);
+                }
+            });
+
+            // Cuadrícula S x S de YOLO
+            if (showGrid) {
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.18)';
+                ctx.lineWidth = 1;
+                const cols = 12;
+                const rows = 7;
+                for (let c = 1; c < cols; c++) {
+                    ctx.beginPath();
+                    ctx.moveTo((w / cols) * c, 0);
+                    ctx.lineTo((w / cols) * c, h);
+                    ctx.stroke();
+                }
+                for (let r = 1; r < rows; r++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, (h / rows) * r);
+                    ctx.lineTo(w, (h / rows) * r);
+                    ctx.stroke();
+                }
+            }
+
+            document.getElementById('lbl-visible-objs').innerText = visibleCount;
+        }
+
+        // 7. AUTOEVALUACIÓN INTERACTIVA
+        const quizAnswered = { 1: false, 2: false, 3: false };
+        let quizScore = 0;
+
+        function answerQuiz(qNum, isCorrect, btnEl) {
+            const buttons = document.querySelectorAll(`.q${qNum}-btn`);
+            buttons.forEach(b => {
+                b.classList.remove('bg-skyBrand-600', 'text-white', 'border-skyBrand-600', 'bg-red-50', 'border-red-400', 'text-red-800');
+                b.classList.add('bg-white', 'border-skyBrand-200');
+            });
+
+            const msg = document.getElementById(`q${qNum}-msg`);
+            msg.classList.remove('hidden');
+
+            if (isCorrect) {
+                btnEl.classList.remove('bg-white', 'border-skyBrand-200');
+                btnEl.classList.add('bg-skyBrand-600', 'text-white', 'border-skyBrand-600');
+                msg.className = "text-[11px] font-bold text-skyBrand-700";
+                msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> ¡Correcto! Muy bien fundamentado.`;
+                if (!quizAnswered[qNum]) {
+                    quizAnswered[qNum] = true;
+                    quizScore++;
+                    document.getElementById('quiz-score').innerText = quizScore;
+                }
+            } else {
+                btnEl.classList.remove('bg-white', 'border-skyBrand-200');
+                btnEl.classList.add('bg-red-50', 'border-red-400', 'text-red-800');
+                msg.className = "text-[11px] font-bold text-red-600";
+                msg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Respuesta incorrecta. Intenta de nuevo.`;
+            }
+        }
+
+        // INICIALIZACIÓN
+        window.onload = function() {
+            selectNetworkScope('PAN');
+            selectDevice('SWITCH');
+            requestAnimationFrame(renderNetSimCanvas);
+        };
+
+        window.addEventListener('resize', () => {
+            if (!document.getElementById('panel-yolo').classList.contains('hidden')) {
+                drawYoloDemoCanvas();
+            }
+        });
+
+        // 8. DETECCIÓN REAL EN VIVO CON WEBCAM (TENSORFLOW.JS + COCO-SSD)
+        let cocoModel = null;
+        let webcamStream = null;
+        let webcamRunning = false;
+        let webcamAnimFrame = null;
+        let lastFrameTimestamp = performance.now();
+
+        // Diccionario de traducción COCO Inglés -> Español
+        const cocoSpanishLabels = {
+            'person': 'persona',
+            'bicycle': 'bicicleta',
+            'car': 'auto',
+            'motorcycle': 'motocicleta',
+            'airplane': 'avión',
+            'bus': 'autobús',
+            'train': 'tren',
+            'truck': 'camión',
+            'boat': 'bote',
+            'traffic light': 'semáforo',
+            'fire hydrant': 'hidrante',
+            'stop sign': 'señal de pare',
+            'bench': 'banca',
+            'bird': 'ave',
+            'cat': 'gato',
+            'dog': 'perro',
+            'backpack': 'mochila',
+            'umbrella': 'paraguas',
+            'handbag': 'bolso',
+            'tie': 'corbata',
+            'suitcase': 'maleta',
+            'sports ball': 'balón',
+            'bottle': 'botella',
+            'wine glass': 'copa',
+            'cup': 'taza',
+            'fork': 'tenedor',
+            'knife': 'cuchillo',
+            'spoon': 'cuchara',
+            'bowl': 'tazón',
+            'banana': 'banano',
+            'apple': 'manzana',
+            'sandwich': 'sándwich',
+            'orange': 'naranja',
+            'chair': 'silla',
+            'couch': 'sofá',
+            'potted plant': 'planta',
+            'bed': 'cama',
+            'dining table': 'mesa',
+            'tv': 'monitor / TV',
+            'laptop': 'portátil',
+            'mouse': 'ratón (mouse)',
+            'remote': 'control remoto',
+            'keyboard': 'teclado',
+            'cell phone': 'celular',
+            'microwave': 'microondas',
+            'oven': 'horno',
+            'toaster': 'tostadora',
+            'sink': 'lavamanos',
+            'refrigerator': 'nevera',
+            'book': 'libro',
+            'clock': 'reloj',
+            'vase': 'florero',
+            'scissors': 'tijeras',
+            'teddy bear': 'peluche',
+            'toothbrush': 'cepillo dental'
+        };
+
+        function translateCocoClass(enClass) {
+            return cocoSpanishLabels[enClass] || enClass;
+        }
+
+        function updateWebcamConfLabel() {
+            const val = parseFloat(document.getElementById('webcam-conf-slider').value);
+            document.getElementById('webcam-conf-lbl').innerText = `${Math.round(val * 100)}%`;
+        }
+
+        function setWebcamStatus(type, htmlMsg, badgeText = null) {
+            const banner = document.getElementById('webcam-status-banner');
+            const icon = document.getElementById('webcam-status-icon');
+            const text = document.getElementById('webcam-status-text');
+            const badge = document.getElementById('webcam-model-badge');
+
+            text.innerHTML = htmlMsg;
+            if (badgeText) badge.innerText = badgeText;
+
+            if (type === 'loading') {
+                banner.className = "bg-skyBrand-100 border border-skyBrand-300 rounded-2xl p-3.5 text-xs text-skyBrand-900 flex items-center justify-between gap-3";
+                icon.className = "fa-solid fa-spinner fa-spin text-skyBrand-600 text-base";
+            } else if (type === 'active') {
+                banner.className = "bg-emerald-50 border border-emerald-300 rounded-2xl p-3.5 text-xs text-emerald-900 flex items-center justify-between gap-3";
+                icon.className = "fa-solid fa-circle-dot text-emerald-600 text-base animate-pulse";
+            } else if (type === 'error') {
+                banner.className = "bg-red-50 border border-red-300 rounded-2xl p-3.5 text-xs text-red-900 flex items-center justify-between gap-3";
+                icon.className = "fa-solid fa-triangle-exclamation text-red-600 text-base";
+            } else {
+                banner.className = "bg-skyBrand-50 border border-skyBrand-200 rounded-2xl p-3.5 text-xs text-skyBrand-900 flex items-center justify-between gap-3";
+                icon.className = "fa-solid fa-circle-info text-skyBrand-600 text-base";
+            }
+        }
+
+        async function startWebcamDetection() {
+            if (webcamRunning) return;
+
+            const btnStart = document.getElementById('btn-start-webcam');
+            const btnStop = document.getElementById('btn-stop-webcam');
+            const videoEl = document.getElementById('webcam-video');
+            const canvasEl = document.getElementById('webcam-canvas');
+            const placeholderEl = document.getElementById('webcam-placeholder');
+
+            // Verificar compatibilidad del navegador
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                setWebcamStatus('error', 'Tu navegador no soporta acceso a cámara web (<code>getUserMedia</code>) o la página no se abrió en un contexto seguro (HTTPS / localhost).', 'No soportado');
+                return;
+            }
+
+            if (typeof cocoSsd === 'undefined') {
+                setWebcamStatus('error', 'No se pudo cargar la librería de detección (verifica tu conexión a Internet para descargar los pesos COCO desde el CDN).', 'Sin conexión CDN');
+                return;
+            }
+
+            try {
+                btnStart.disabled = true;
+                btnStart.classList.add('opacity-60', 'cursor-wait');
+
+                // 1. Cargar modelo pre-entrenado COCO si aún no está en memoria
+                if (!cocoModel) {
+                    setWebcamStatus('loading', 'Descargando y cargando pesos neuronales del modelo pre-entrenado <strong>COCO (lite_mobilenet_v2)</strong> en memoria...', 'Cargando pesos...');
+                    cocoModel = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
+                }
+
+                // 2. Solicitar permiso y flujo de video de la webcam
+                setWebcamStatus('loading', 'Solicitando acceso a tu cámara web...', 'Esperando permiso...');
+                webcamStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+                    audio: false
+                });
+
+                videoEl.srcObject = webcamStream;
+                await new Promise((resolve) => {
+                    videoEl.onloadedmetadata = () => {
+                        videoEl.play();
+                        resolve();
+                    };
+                });
+
+                // Ajustar resolución interna del canvas al tamaño del video
+                canvasEl.width = videoEl.videoWidth || 640;
+                canvasEl.height = videoEl.videoHeight || 480;
+
+                placeholderEl.classList.add('hidden');
+                canvasEl.classList.remove('hidden');
+
+                webcamRunning = true;
+                lastFrameTimestamp = performance.now();
+
+                btnStart.classList.remove('opacity-60', 'cursor-wait');
+                btnStart.classList.add('bg-slate-200', 'text-slate-400', 'cursor-not-allowed');
+                btnStart.classList.remove('bg-skyBrand-600', 'hover:bg-skyBrand-700', 'text-white');
+
+                btnStop.disabled = false;
+                btnStop.className = "px-4 py-2.5 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-700 text-white shadow-md transition-all flex items-center gap-2 cursor-pointer";
+
+                setWebcamStatus('active', '<strong>Detección en vivo activa:</strong> Analizando fotogramas directamente en tu navegador.', 'COCO Activo (En Vivo)');
+
+                detectWebcamFrame();
+
+            } catch (err) {
+                console.error('Error al iniciar webcam:', err);
+                btnStart.disabled = false;
+                btnStart.classList.remove('opacity-60', 'cursor-wait');
+
+                let errorDetail = 'No se pudo acceder a la cámara web.';
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    errorDetail = 'Permiso denegado. Autoriza el uso de la cámara en el ícono de candado/cámara de la barra de direcciones.';
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    errorDetail = 'No se encontró ninguna cámara web conectada a este dispositivo.';
+                } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                    errorDetail = 'La cámara está siendo utilizada por otra aplicación (Zoom, Teams, etc.). Ciérrala e intenta de nuevo.';
+                }
+
+                setWebcamStatus('error', `<strong>Error de Cámara:</strong> ${errorDetail}`, 'Cámara no disponible');
+            }
+        }
+
+        async function detectWebcamFrame() {
+            if (!webcamRunning) return;
+
+            const videoEl = document.getElementById('webcam-video');
+            const canvasEl = document.getElementById('webcam-canvas');
+            const ctx = canvasEl.getContext('2d');
+            const minConf = parseFloat(document.getElementById('webcam-conf-slider').value);
+
+            const tStart = performance.now();
+
+            // Ejecutar inferencia sobre el fotograma actual
+            const predictions = await cocoModel.detect(videoEl);
+
+            const tEnd = performance.now();
+            const inferenceMs = Math.round(tEnd - tStart);
+            const fps = Math.max(1, Math.round(1000 / Math.max(1, tEnd - lastFrameTimestamp)));
+            lastFrameTimestamp = tEnd;
+
+            // Dibujar imagen de video en el canvas
+            ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+            ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
+
+            // Filtrar predicciones según el umbral seleccionado por el usuario
+            const validDetections = predictions.filter(p => p.score >= minConf);
+
+            // Dibujar cajas delimitadoras (Bounding Boxes) estilo sky-blue / naranja
+            validDetections.forEach(pred => {
+                const [x, y, width, height] = pred.bbox;
+                const labelEs = translateCocoClass(pred.class);
+                const confPct = Math.round(pred.score * 100);
+                const isPerson = pred.class === 'person';
+
+                const boxColor = isPerson ? '#0284c7' : '#f97316';
+
+                // Caja delimitadora
+                ctx.strokeStyle = boxColor;
+                ctx.lineWidth = 3;
+                ctx.strokeRect(x, y, width, height);
+
+                // Fondo de etiqueta
+                const text = `${labelEs} ${confPct}%`;
+                ctx.font = 'bold 14px Inter, sans-serif';
+                const textWidth = ctx.measureText(text).width;
+                const labelY = y > 24 ? y - 24 : y;
+
+                ctx.fillStyle = boxColor;
+                ctx.fillRect(x, labelY, textWidth + 12, 24);
+
+                // Texto de etiqueta
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(text, x + 6, labelY + 17);
+            });
+
+            // Actualizar telemetría lateral
+            document.getElementById('webcam-fps').innerText = `${fps} FPS`;
+            document.getElementById('webcam-latency').innerText = `${inferenceMs} ms`;
+            document.getElementById('webcam-obj-count').innerText = validDetections.length;
+
+            const listContainer = document.getElementById('webcam-detections-list');
+            if (validDetections.length === 0) {
+                listContainer.innerHTML = `<div class="text-slate-400 italic text-[11px]">Ningún objeto supera el ${Math.round(minConf * 100)}% de confianza...</div>`;
+            } else {
+                listContainer.innerHTML = validDetections.map(d => {
+                    const name = translateCocoClass(d.class);
+                    const pct = Math.round(d.score * 100);
+                    return `
+                        <div class="flex justify-between items-center bg-skyBrand-50 px-2.5 py-1.5 rounded-lg border border-skyBrand-200">
+                            <span class="font-bold text-skyBrand-900 capitalize">${name}</span>
+                            <span class="font-mono font-bold text-skyBrand-600">${pct}%</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (webcamRunning) {
+                webcamAnimFrame = requestAnimationFrame(detectWebcamFrame);
+            }
+        }
+
+        function stopWebcamDetection() {
+            webcamRunning = false;
+            if (webcamAnimFrame) {
+                cancelAnimationFrame(webcamAnimFrame);
+                webcamAnimFrame = null;
+            }
+
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+
+            const videoEl = document.getElementById('webcam-video');
+            const canvasEl = document.getElementById('webcam-canvas');
+            const placeholderEl = document.getElementById('webcam-placeholder');
+            const btnStart = document.getElementById('btn-start-webcam');
+            const btnStop = document.getElementById('btn-stop-webcam');
+
+            videoEl.srcObject = null;
+            canvasEl.classList.add('hidden');
+            placeholderEl.classList.remove('hidden');
+
+            btnStart.disabled = false;
+            btnStart.className = "px-4 py-2.5 rounded-xl text-xs font-bold bg-skyBrand-600 hover:bg-skyBrand-700 text-white shadow-md transition-all flex items-center gap-2 cursor-pointer";
+
+            btnStop.disabled = true;
+            btnStop.className = "px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-200 text-slate-400 cursor-not-allowed transition-all flex items-center gap-2";
+
+            document.getElementById('webcam-fps').innerText = '0 FPS';
+            document.getElementById('webcam-latency').innerText = '0 ms';
+            document.getElementById('webcam-obj-count').innerText = '0';
+            document.getElementById('webcam-detections-list').innerHTML = `<div class="text-slate-400 italic text-[11px]">Cámara detenida.</div>`;
+
+            setWebcamStatus('idle', 'Cámara detenida correctamente. Haz clic en <strong>"Encender Webcam"</strong> cuando desees volver a probar.', cocoModel ? 'Modelo COCO en caché' : 'Modelo COCO: Listo');
+        }
+    </script>
+</body>
+</html>

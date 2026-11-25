@@ -1,0 +1,77 @@
+.redsim{--teal:var(--brand);--tealbg:var(--brandbg);--oth:light-dark(#5c6675,#a3afc0);--tcp:light-dark(#6b3fb5,#b79cff);
+--scene:light-dark(#e8ebef,#1a2538);--ground:light-dark(#ccd3dc,#2c3a52);--fig:light-dark(#4f5b6d,#8494ad);--head:var(--night);font-size:16px}
+.redsim .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+.redsim .two{margin-bottom:0}.redsim .two .card{margin-bottom:16px}
+.redsim .mono,.redsim code,.redsim pre,.redsim .kpi b,.redsim select,.redsim input{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.redsim *{box-sizing:border-box;min-width:0}
+.redsim .mono,.redsim code,.redsim pre,.redsim .kpi b,.redsim select,.redsim input{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.redsim .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.redsim h2{font-size:19px;margin:0 0 10px}
+.redsim h3{font-size:16px;margin:0 0 8px}
+.redsim .ctl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:10px 14px}
+.redsim .grp{grid-column:1/-1;font-weight:700;color:var(--teal);font-size:14px;margin-top:6px;border-top:1px solid var(--line);padding-top:10px}
+.redsim .grp:first-child{border:0;margin:0;padding:0}
+.redsim label.c{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted)}
+.redsim label.c span b{color:var(--ink)}
+.redsim select,.redsim input[type=number],.redsim input[type=text]{font-size:15px;min-height:40px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink)}
+.redsim input[type=range]{accent-color:var(--teal);min-height:32px}
+.redsim label.chk{display:flex;align-items:center;gap:8px;font-size:14px;min-height:40px}
+.redsim input[type=checkbox]{width:20px;height:20px;accent-color:var(--teal)}
+.redsim button{font:inherit;font-size:14px;min-height:40px;padding:6px 14px;border-radius:8px;border:1px solid var(--teal);background:var(--teal);color:#fff;cursor:pointer}
+.redsim button.ghost{background:transparent;color:var(--teal)}
+.redsim button:focus-visible,.redsim select:focus-visible,.redsim input:focus-visible{outline:3px solid var(--vid);outline-offset:2px}
+.redsim button:disabled{opacity:.5;cursor:default}
+.redsim .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.redsim .formula{font-size:13px;color:var(--muted);margin-top:10px}
+.redsim .fig{position:relative}
+.redsim .fig canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.redsim #topo{height:clamp(330px,40vw,430px)}
+.redsim .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:8px}
+.redsim .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.redsim .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px}
+.redsim .kpi{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.redsim .kpi span{display:block;font-size:13px;color:var(--muted)}
+.redsim .kpi b{font-size:20px;white-space:nowrap}
+.redsim .kpi.ok b{color:var(--ok)}
+.redsim .kpi.warn b{color:var(--warn)}
+.redsim .kpi.bad b{color:var(--bad)}
+.redsim .queues{display:grid;gap:6px;margin-top:12px}
+.redsim .qrow{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr) minmax(0,150px);gap:10px;align-items:center;font-size:13px}
+.redsim .qbar{height:16px;border-radius:4px;background:var(--tealbg);overflow:hidden}
+.redsim .qbar i{display:block;height:100%;width:0;background:var(--vid);transition:width .15s}
+.redsim .qbar.d i{background:var(--oth)}
+.redsim .drops{font-size:13px;color:var(--muted);margin-top:6px}
+.redsim .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.redsim .vid{aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--scene)}
+.redsim .vid canvas{width:100%;height:100%;display:block}
+.redsim .cap{font-size:13px;color:var(--muted);margin-top:6px;min-height:2.6em}
+.redsim .chart{height:220px}
+.redsim .tbl{overflow:auto;max-height:330px;border:1px solid var(--line);border-radius:8px}
+.redsim table{border-collapse:collapse;width:100%;font-size:13px}
+.redsim th,.redsim td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+.redsim th{position:sticky;top:0;background:var(--panel);font-weight:700}
+.redsim td.n,.redsim th.n{text-align:right}
+.redsim #captbl tr{cursor:pointer}
+.redsim #captbl tr:hover td{background:var(--tealbg)}
+.redsim #captbl tr.sel td{background:var(--tealbg);font-weight:700}
+.redsim tr.p-video td:nth-child(5){color:var(--vid)}
+.redsim tr.p-tcp td:nth-child(5){color:var(--tcp)}
+.redsim #insp{font-size:13px;line-height:1.45;margin:10px 0 0;white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:10px;min-height:120px;max-height:300px;overflow:auto}
+.redsim .term{background:#0c1110;color:#cfe3dc;border-radius:8px;padding:10px;font-size:13px}
+.redsim .term pre{margin:0;height:300px;overflow:auto;white-space:pre-wrap}
+.redsim .term form{display:flex;gap:6px;align-items:center;margin-top:6px}
+.redsim .term input{flex:1;background:#151d1b;color:#e9f5f0;border-color:#2b3833}
+.redsim .term .pr{color:#7fd6c0;white-space:nowrap}
+.redsim .tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.redsim .tabs button{background:transparent;color:var(--teal);min-height:36px}
+.redsim .tabs button[aria-pressed=true]{background:var(--teal);color:#fff}
+.redsim .hint{font-size:13px;color:var(--muted)}
+.redsim #exres td:first-child{font-weight:700}
+.redsim details summary{cursor:pointer;font-weight:700}
+.redsim details ul{margin:8px 0 0;padding-left:20px;font-size:14px}
+.redsim .status{font-size:14px;color:var(--teal);font-weight:700}
+@media(max-width:640px){.redsim #topo{height:560px}}
+@media(max-width:820px){.redsim .two{grid-template-columns:minmax(0,1fr)}
+.redsim .qrow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.redsim .qrow .qbar{grid-column:1/-1;grid-row:2}}
+@media(prefers-reduced-motion:reduce){.redsim .qbar i{transition:none}}

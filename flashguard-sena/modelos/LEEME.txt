@@ -1,0 +1,13 @@
+Coloque aquí la carpeta del modelo YOLOv8 exportado para la web:
+
+  pip install ultralytics
+  yolo export model=yolov8n.pt format=tfjs
+
+Se crea la carpeta "yolov8n_web_model" (model.json + archivos .bin).
+Cópiela dentro de esta carpeta para que quede así:
+
+  modelos/yolov8n_web_model/model.json
+  modelos/yolov8n_web_model/group1-shard1of4.bin
+  ...
+
+Al abrir la pestaña Simulación > Detector de personas en GitHub Pages, el modelo se carga solo.

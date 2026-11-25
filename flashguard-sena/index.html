@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlashGuard SENA · Red e IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/red.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-cable" viewBox="0 0 24 24"><path d="M7 3v4M11 3v4M5 7h8v5a4 4 0 0 1-8 0zM9 16v2a3 3 0 0 0 3 3h3a3 3 0 0 0 3-3V8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+ <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5zM2 13l10 5 10-5M2 17.5l10 5 10-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+ <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M4 18a8 8 0 1 1 16 0M12 18l4-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+ <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="2"/><rect x="9" y="9" width="6" height="6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+ <symbol id="i-flask" viewBox="0 0 24 24"><path d="M9 3h6M10 3v6L4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2L14 9V3M7 15h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+ <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 15l4-4 3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+ <symbol id="i-building" viewBox="0 0 24 24"><path d="M4 21V5l8-3v19M12 8l8 3v10M2 21h20M7 8h2M7 12h2M7 16h2M15 14h2M15 18h2" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+ <symbol id="i-school" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c3 3 9 3 12 0v-5M22 9v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+ <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 9v12h14V9M10 21v-6h4v6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="nav">
+ <div class="wrap">
+  <a class="brand" href="#inicio"><svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="9" fill="#0f52ba"/><path d="M20 6 11 20h7l-2 10 9-14h-7z" fill="#ffb366"/></svg><span>FlashGuard SENA<small>Red · Video · IA</small></span></a>
+  <button class="menu" id="menu" aria-label="Abrir menú" aria-expanded="false">☰</button>
+  <nav id="mainnav">
+   <a href="#inicio" data-r="inicio">Inicio</a>
+   <a href="#pitch" data-r="pitch">Pitch</a>
+   <a href="#teoria" data-r="teoria">Teoría</a>
+   <a href="#simulacion" data-r="simulacion">Simulación</a>
+  </nav>
+ </div>
+</header>
+
+<main>
+<!-- ================= INICIO ================= -->
+<div class="page" id="page-inicio">
+ <section class="hero">
+  <div class="wrap">
+   <div>
+    <span class="kick" style="color:#ffb366">Flash Guard &amp; Streaming Analytics</span>
+    <h1>Video con IA que no se congela, porque la red <em>está bien hecha</em></h1>
+    <p class="lead">Cableado certificado, VLAN y QoS para que el video de las cámaras llegue completo al servidor YOLOv8 y a la pantalla del operador, sin pérdida y con baja latencia.</p>
+    <div class="ctas"><a class="btn" href="#simulacion">Ver la simulación</a><a class="btn ghost" href="#pitch">Conocer el pitch</a></div>
+    <div class="facts">
+     <div class="fact"><b>YOLOv8n</b><span>detección en tiempo real</span></div>
+     <div class="fact"><b>10·20·99</b><span>VLAN servidor, clientes, gestión</span></div>
+     <div class="fact"><b>AF41</b><span>marca DSCP del video</span></div>
+     <div class="fact"><b>Cat 6A</b><span>cableado TIA/EIA-568</span></div>
+    </div>
+   </div>
+   <div class="hero-fig"><canvas id="heroCv" aria-label="Animación: el video viaja de la cámara al servidor YOLO, al switch, al router y al cliente"></canvas></div>
+  </div>
+ </section>
+ <section class="band">
+  <div class="wrap">
+   <div class="sec-h" data-reveal><span class="kick">Lo que hacemos</span><h2>De la capa física a la detección de personas</h2><p>Atacamos la causa raíz de los fallos de la analítica de video: la infraestructura. Después lo medimos.</p></div>
+   <div class="grid3">
+    <div class="card feat" data-reveal><div class="ic"><svg width="24" height="24"><use href="#i-cable"/></svg></div><h3>Cableado certificado</h3><p>Instalación Cat 6A según TIA/EIA-568 e ISO/IEC 11801, libre de EMI y con certificación de cada punto.</p></div>
+    <div class="card feat" data-reveal><div class="ic"><svg width="24" height="24"><use href="#i-layers"/></svg></div><h3>Segmentación con VLAN</h3><p>Cámaras y servidor en una VLAN, clientes en otra, gestión aparte. Troncal 802.1Q hacia el router.</p></div>
+    <div class="card feat" data-reveal><div class="ic"><svg width="24" height="24"><use href="#i-gauge"/></svg></div><h3>Calidad de servicio</h3><p>El video se marca DSCP AF41 y tiene su propia clase en el router: cuando el enlace se llena, el video sigue pasando.</p></div>
+    <div class="card feat" data-reveal><div class="ic"><svg width="24" height="24"><use href="#i-eye"/></svg></div><h3>Analítica con YOLOv8</h3><p>Detección y conteo de personas y vehículos con el modelo YOLOv8n, liviano para correr en el borde.</p></div>
+    <div class="card feat" data-reveal><div class="ic"><svg width="24" height="24"><use href="#i-flask"/></svg></div><h3>Simulación antes de instalar</h3><p>Probamos resolución, FPS, congestión y QoS en un simulador de eventos discretos antes de tocar el rack.</p></div>
+    <div class="card feat" data-reveal><div class="ic"><svg width="24" height="24"><use href="#i-chart"/></svg></div><h3>Mediciones verificables</h3><p>Latencia, jitter y pérdida medidos con Wireshark e iperf3, con informe técnico para el cliente.</p></div>
+   </div>
+  </div>
+ </section>
+ <section class="band cta-band"><div class="wrap"><h2>Pruebe la red paquete por paquete</h2><a class="btn" href="#simulacion">Abrir el simulador</a></div></section>
+</div>
+
+<!-- ================= PITCH ================= -->
+<div class="page" id="page-pitch">
+ <section class="p-hero">
+  <canvas id="pitchCv" aria-hidden="true"></canvas>
+  <div class="wrap">
+   <span class="kick" style="color:#ffb366">Pitch · Flash Guard &amp; Streaming Analytics</span>
+   <h1>Infraestructura L2/L3 para videovigilancia con IA en tiempo real</h1>
+   <p class="slogan" id="slogan" data-text="Conectamos el presente, aseguramos el futuro analítico."></p>
+   <div class="p-stats">
+    <div class="p-stat"><b><span data-count="4.2" data-dec="1">0</span> %</b><span>de pérdida de paquetes en la red plana actual</span></div>
+    <div class="p-stat"><b><span data-count="118">0</span> → <span data-count="8">0</span> ms</b><span>latencia de red, de red plana a VLAN + QoS</span></div>
+    <div class="p-stat"><b>$<span data-count="358400" data-fmt="cop">0</span></b><span>inversión total del proyecto (COP)</span></div>
+   </div>
+  </div>
+ </section>
+ <nav class="chips" aria-label="Secciones del pitch"><div class="wrap" id="pchips"></div></nav>
+
+ <section class="ps" id="p-equipo" data-chip="Equipo"><div class="wrap">
+  <div class="ps-h"><span class="n">01</span><h2>Equipo y roles directivos</h2></div>
+  <div class="team">
+   <div class="card person" data-reveal><div class="avatar"><span>D</span></div><div><h3>David</h3><div class="role">Dirección general y gestión</div><ul><li>Dirección estratégica: representa a Flash Guard y define los objetivos de negocio.</li><li>Gestión de clientes y relaciones comerciales e institucionales.</li><li>Supervisión de proyectos, recursos financieros y talento humano.</li></ul></div></div>
+   <div class="card person" data-reveal><div class="avatar"><span>A</span></div><div><h3>Abraham</h3><div class="role">Dirección técnica, ingeniería e IA</div><ul><li>Diseño de cableado estructurado y segmentación de red.</li><li>Cumplimiento de TIA/EIA-568 e ISO/IEC 11801.</li><li>Certificación, análisis de latencia e implementación de YOLOv8.</li></ul></div></div>
+  </div>
+ </div></section>
+
+ <section class="ps" id="p-proposito" data-chip="Propósito"><div class="wrap">
+  <div class="ps-h"><span class="n">02</span><h2>Propósito: el porqué del proyecto</h2></div>
+  <p class="quote" data-reveal>“Ningún flujo analítico debe fallar por culpa de una infraestructura defectuosa.”</p>
+  <p data-reveal style="max-width:70ch"><b>Propósito transformacional:</b> garantizar la transmisión continua de datos e imágenes, con cero pérdida y cero congelamiento.</p>
+  <div class="grid3" style="margin-top:18px">
+   <div class="card gap-card" data-reveal><span class="big">L1</span><h3>Brecha de infraestructura</h3><p>Los cableados tradicionales desestabilizan el flujo de datos antes de que llegue al análisis.</p></div>
+   <div class="card gap-card" data-reveal><span class="big"><span data-count="4">0</span> %</span><h3>Interrupción en la secuencia</h3><p>Un 4 % de paquetes perdidos detiene el rastreo continuo en YOLOv8.</p></div>
+   <div class="card gap-card" data-reveal><span class="big">$</span><h3>Ineficiencia en el origen</h3><p>Se gasta en buscar fallas en el software cuando la raíz está en la red física.</p></div>
+  </div>
+ </div></section>
+
+ <section class="ps" id="p-problema" data-chip="Problema"><div class="wrap">
+  <div class="ps-h"><span class="n">03</span><h2>Problema central, causas y efectos</h2></div>
+  <p style="max-width:75ch"><b>Problema central:</b> cableado estructurado mal instalado y una red sin segmentar generan latencia excesiva, colisiones y pérdida de paquetes que degradan el streaming y la visión por computador.</p>
+  <div data-reveal><svg class="tree" id="tree" viewBox="0 0 1000 470" role="img" aria-label="Árbol de problemas: cuatro causas abajo, el problema central en el medio y cuatro efectos arriba"></svg></div>
+  <div class="card" style="margin-top:22px" data-reveal>
+   <h3 style="font-size:19px;margin-bottom:6px">¿Por qué un 4 % de pérdida congela el video?</h3>
+   <p class="muted" style="max-width:80ch">Un cuadro de video viaja en varios paquetes y los cuadros P dependen del anterior. Si se pierde un solo paquete, el cuadro queda dañado y el daño se arrastra hasta el siguiente cuadro I. Mueva el control y observe un GOP de 30 cuadros (1 s a 30 FPS).</p>
+   <div class="ctl"><label for="gopLoss">Pérdida de paquetes</label><input type="range" id="gopLoss" min="0" max="10" step="0.1" value="4" style="max-width:320px"><b class="mono" id="gopLossV">4,0 %</b><button class="btn sm ghost" id="gopRoll" type="button">Otra muestra</button></div>
+   <div class="gop" id="gop"></div>
+   <div class="gop-out"><span>Probabilidad de dañar un cuadro P (6 paquetes): <b id="gopP">—</b></span><span>Cuadros con defectos en esta muestra: <b id="gopN">—</b></span><span>Cuadros dañados esperados por segundo: <b id="gopE">—</b></span></div>
+  </div>
+ </div></section>
+
+ <section class="ps" id="p-valor" data-chip="Propuesta de valor"><div class="wrap">
+  <div class="ps-h"><span class="n">04</span><h2>Lienzo de propuesta de valor</h2></div>
+  <div data-reveal><svg class="vpc" viewBox="0 0 1000 440" role="img" aria-label="Lienzo de propuesta de valor: mapa de valor a la izquierda y perfil del cliente a la derecha">
+   <g class="sh" style="transition-delay:.1s"><rect x="40" y="40" width="380" height="360" rx="18" fill="var(--brandbg)" stroke="var(--brand)" stroke-width="2"/>
+    <line x1="230" y1="40" x2="230" y2="400" stroke="var(--brand)" stroke-width="1.5"/><line x1="230" y1="220" x2="420" y2="220" stroke="var(--brand)" stroke-width="1.5"/>
+    <text x="135" y="74" text-anchor="middle" font-weight="700" fill="var(--brand)" font-size="16">Servicios</text>
+    <text x="135" y="110" text-anchor="middle" fill="var(--ink)" font-size="14"><tspan x="135">Cableado Cat 6A</tspan><tspan x="135" dy="20">VLAN de video</tspan><tspan x="135" dy="20">QoS en capa 3</tspan><tspan x="135" dy="20">YOLOv8 en el borde</tspan></text>
+    <text x="325" y="74" text-anchor="middle" font-weight="700" fill="var(--brand)" font-size="16">Creadores</text>
+    <text x="325" y="110" text-anchor="middle" fill="var(--ink)" font-size="14"><tspan x="325">Analítica en</tspan><tspan x="325" dy="20">20,4 ms en total</tspan><tspan x="325" dy="20">a bajo costo</tspan></text>
+    <text x="325" y="254" text-anchor="middle" font-weight="700" fill="var(--brand)" font-size="16">Aliviadores</text>
+    <text x="325" y="290" text-anchor="middle" fill="var(--ink)" font-size="14"><tspan x="325">Cero congelamiento</tspan><tspan x="325" dy="20">Jitter de 4 ms</tspan></text>
+    <text x="230" y="428" text-anchor="middle" font-weight="700" fill="var(--ink)" font-size="15">Mapa de valor Flash Guard</text></g>
+   <g class="sh" style="transition-delay:.4s"><circle cx="760" cy="220" r="185" fill="var(--vidbg)" stroke="var(--vid)" stroke-width="2"/>
+    <line x1="760" y1="35" x2="760" y2="220" stroke="var(--vid)" stroke-width="1.5"/><line x1="760" y1="220" x2="600" y2="312" stroke="var(--vid)" stroke-width="1.5"/><line x1="760" y1="220" x2="920" y2="312" stroke="var(--vid)" stroke-width="1.5"/>
+    <text x="680" y="130" text-anchor="middle" font-weight="700" fill="var(--vid)" font-size="16">Ganancias</text>
+    <text x="680" y="160" text-anchor="middle" fill="var(--ink)" font-size="14"><tspan x="680">Estabilidad 99,9 %</tspan><tspan x="680" dy="20">Alertas inmediatas</tspan></text>
+    <text x="842" y="130" text-anchor="middle" font-weight="700" fill="var(--vid)" font-size="16">Trabajos</text>
+    <text x="842" y="160" text-anchor="middle" fill="var(--ink)" font-size="14"><tspan x="842">Monitorear activos</tspan><tspan x="842" dy="20">Automatizar alertas</tspan></text>
+    <text x="760" y="300" text-anchor="middle" font-weight="700" fill="var(--vid)" font-size="16">Dolores</text>
+    <text x="760" y="330" text-anchor="middle" fill="var(--ink)" font-size="14"><tspan x="760">Latencia &gt; 120 ms</tspan><tspan x="760" dy="20">Video congelado</tspan></text>
+    <text x="760" y="432" text-anchor="middle" font-weight="700" fill="var(--ink)" font-size="15">Perfil del cliente</text></g>
+   <g class="sh" style="transition-delay:.8s"><path d="M440 220 H 560" stroke="var(--ink)" stroke-width="2" marker-end="url(#arr)"/><text x="500" y="208" text-anchor="middle" font-size="13" fill="var(--muted)">encaje</text></g>
+   <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="var(--ink)"/></marker></defs>
+  </svg></div>
+  <p class="note">Solución: infraestructura estandarizada (TIA/EIA-568) con segmentación L2 (VLAN) y priorización L3 (QoS), para que la transmisión y la inferencia con YOLOv8 no pierdan paquetes.</p>
+ </div></section>
+
+ <section class="ps" id="p-bloques" data-chip="Bloques"><div class="wrap">
+  <div class="ps-h"><span class="n">05</span><h2>Bloques de procesamiento paso a paso</h2></div>
+  <div class="steps" data-reveal><div class="rail"><i></i></div>
+   <div class="step"><div class="dot">1</div><h3>Captura IP</h3><p>Stream RTSP constante a 1080p y 30 FPS.</p></div>
+   <div class="step"><div class="dot">2</div><h3>Capa física</h3><p>Cableado Cat 6A certificado, libre de EMI.</p></div>
+   <div class="step"><div class="dot">3</div><h3>Red L2/L3</h3><p>VLAN aislada y priorización QoS del video.</p></div>
+   <div class="step"><div class="dot">4</div><h3>Inferencia YOLOv8</h3><p>Detección en 12,4 ms sin cuadros perdidos.</p></div>
+  </div>
+ </div></section>
+
+ <section class="ps" id="p-ruta" data-chip="Hoja de ruta"><div class="wrap">
+  <div class="ps-h"><span class="n">06</span><h2>Hoja de ruta de implementación</h2></div>
+  <div class="road" data-reveal><div class="bar"><i></i></div>
+   <div class="ph"><b>Q1 · Fase 1</b><h3>Estandarización</h3><p>Certificación del cableado y plantillas de configuración L2/L3.</p></div>
+   <div class="ph"><b>Q2 · Fase 2</b><h3>Piloto en campo</h3><p>Despliegue en Fontibón y pruebas de latencia en vivo.</p></div>
+   <div class="ph"><b>Q3 · Fase 3</b><h3>Servicios en el borde</h3><p>Contenedores Docker para procesar localmente y más rápido.</p></div>
+   <div class="ph"><b>Q4 · Fase 4</b><h3>Escalamiento</h3><p>Expansión a sedes educativas y empresariales en Bogotá.</p></div>
+  </div>
+ </div></section>
+
+ <section class="ps" id="p-mercado" data-chip="Mercado"><div class="wrap">
+  <div class="ps-h"><span class="n">07</span><h2>Mercado, competencia y diferencial</h2></div>
+  <div class="rings" data-reveal>
+   <div class="ring"><svg width="96" height="96" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--panel2)" stroke-width="12"/><circle class="v" cx="50" cy="50" r="42" fill="none" stroke="var(--vid)" stroke-width="12" stroke-linecap="round" transform="rotate(-90 50 50)" data-ring="7.1" data-max="20"/></svg><div><b><span data-count="7.1" data-dec="1">0</span> %</b><span>Crecimiento anual (CAGR) del mercado global de conectividad, 2025–2032</span></div></div>
+   <div class="ring"><svg width="96" height="96" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--panel2)" stroke-width="12"/><circle class="v" cx="50" cy="50" r="42" fill="none" stroke="var(--brand)" stroke-width="12" stroke-linecap="round" transform="rotate(-90 50 50)" data-ring="65.6" data-max="100"/></svg><div><b><span data-count="65.6" data-dec="1">0</span> %</b><span>Hogares colombianos con acceso a Internet (DANE 2024)</span></div></div>
+   <div class="ring"><svg width="96" height="96" viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--panel2)" stroke-width="12"/><circle class="v" cx="50" cy="50" r="42" fill="none" stroke="var(--ok)" stroke-width="12" stroke-linecap="round" transform="rotate(-90 50 50)" data-ring="82.7" data-max="100"/></svg><div><b><span data-count="82.7" data-dec="1">0</span> %</b><span>Penetración de alta velocidad en Bogotá D.C.</span></div></div>
+  </div>
+  <div class="tbl" data-reveal><table id="compTbl"><thead><tr><th>Empresa</th><th>Ubicación</th><th>Mant. prev./corr.</th><th>Equipos de cómputo</th><th>Redes y conectividad</th><th>Seguridad e IA streaming</th></tr></thead><tbody></tbody></table></div>
+  <p class="note"><b>Diferencial estratégico:</b> los competidores se orientan al mantenimiento de computadores o al cableado pasivo. Flash Guard integra analítica con visión artificial (YOLOv8) optimizada desde la capa física hasta la de transporte.</p>
+ </div></section>
+
+ <section class="ps" id="p-tecnico" data-chip="Análisis técnico"><div class="wrap">
+  <div class="ps-h"><span class="n">08</span><h2>Análisis técnico: video, red y YOLOv8</h2></div>
+  <div class="grid2">
+   <div class="card" data-reveal>
+    <div class="ctl" style="justify-content:space-between;margin-bottom:14px"><h3 style="font-size:18px">Matriz de pruebas</h3><div class="ctl"><button class="btn sm on" type="button" data-metric="lat">Latencia de red</button><button class="btn sm ghost" type="button" data-metric="loss">Pérdida</button></div></div>
+    <div class="hbars" id="hbars"></div>
+    <div class="tbl" style="margin-top:16px"><table><thead><tr><th>Configuración</th><th class="n">Red</th><th class="n">YOLOv8</th><th class="n">Pérdida</th><th>Estado</th></tr></thead><tbody>
+     <tr><td>Red plana (sin VLAN ni QoS)</td><td class="n">118 ms</td><td class="n">12,4 ms</td><td class="n">4,20 %</td><td><span class="badge bad">Crítico</span></td></tr>
+     <tr><td>Con VLAN 100 aislada</td><td class="n">22 ms</td><td class="n">12,4 ms</td><td class="n">0,15 %</td><td><span class="badge warn">Aceptable</span></td></tr>
+     <tr><td>VLAN 100 + QoS DSCP CS4</td><td class="n">8 ms</td><td class="n">12,4 ms</td><td class="n">0,00 %</td><td><span class="badge ok">Óptimo</span></td></tr>
+    </tbody></table></div>
+   </div>
+   <div class="card" data-reveal>
+    <h3 style="font-size:18px;margin-bottom:10px">Influencia de la configuración</h3>
+    <ul class="ul">
+     <li><b>H.264:</b> decodificación de 3 a 5 ms y bajo consumo de CPU en el preprocesamiento.</li>
+     <li><b>H.265 (HEVC):</b> ahorra cerca del 45 % de ancho de banda, pero la decodificación sube a 12 ms y satura la CPU en el borde.</li>
+     <li><b>1080p a 30 FPS:</b> punto óptimo para YOLOv8n (37,3 mAP en COCO); 4K agrega carga innecesaria.</li>
+     <li><b>CBR + GOP = 30:</b> evita ráfagas que desbordan los búferes y resincroniza en 1 segundo.</li>
+     <li><b>VLAN:</b> aísla el dominio de broadcast y elimina descartes por tormentas de broadcast.</li>
+     <li><b>QoS DSCP:</b> el video va en una cola prioritaria cuando hay congestión.</li>
+    </ul>
+   </div>
+  </div>
+ </div></section>
+
+ <section class="ps" id="p-presupuesto" data-chip="Presupuesto"><div class="wrap">
+  <div class="ps-h"><span class="n">09</span><h2>Presupuesto y financiamiento</h2></div>
+  <div class="donut" data-reveal>
+   <svg id="donut" viewBox="0 0 220 220" role="img" aria-label="Distribución del presupuesto"></svg>
+   <div><div class="leg" id="donutLeg"></div><p class="note">Bajo CAPEX inicial: se aprovecha infraestructura pasiva estandarizada y software libre (YOLOv8 y OpenCV).</p></div>
+  </div>
+  <div class="grid2" style="margin-top:24px">
+   <div data-reveal><h3 style="font-size:17px;margin-bottom:8px">Materiales e insumos · $143.500</h3><div class="tbl"><table><thead><tr><th>Descripción</th><th class="n">Cant.</th><th class="n">Valor parcial</th></tr></thead><tbody>
+    <tr><td>Cable UTP Cat 6</td><td class="n">1</td><td class="n">$7.000</td></tr><tr><td>Jack Cat 6</td><td class="n">3</td><td class="n">$76.500</td></tr><tr><td>Breakers 20 A y riel</td><td class="n">2</td><td class="n">$20.000</td></tr><tr><td>Canaleta 15 m y cajas</td><td class="n">4</td><td class="n">$23.000</td></tr><tr><td>Tomas eléctricas y RJ45</td><td class="n">5</td><td class="n">$55.000</td></tr><tr><td>Conectores, clavija y tornillería</td><td class="n">31</td><td class="n">$20.800</td></tr></tbody></table></div></div>
+   <div data-reveal><h3 style="font-size:17px;margin-bottom:8px">Equipos y herramientas</h3><div class="tbl"><table><thead><tr><th>Descripción</th><th class="n">Cant.</th><th class="n">Propia</th><th class="n">Otras fuentes</th></tr></thead><tbody>
+    <tr><td>Ponchadora, alicate, destornilladores, pinzas</td><td class="n">5</td><td class="n">$83.000</td><td class="n">$0</td></tr><tr><td>Taladro de alta percusión</td><td class="n">1</td><td class="n">$0</td><td class="n">$106.000</td></tr><tr><td>Tester RJ45, broca, bisturí, segueta</td><td class="n">4</td><td class="n">$25.900</td><td class="n">$0</td></tr></tbody></table></div></div>
+  </div>
+ </div></section>
+
+ <section class="ps" id="p-alcance" data-chip="Alcance"><div class="wrap">
+  <div class="ps-h"><span class="n">10</span><h2>Alcance sectorial</h2></div>
+  <div class="grid3">
+   <div class="card sector" data-reveal><div class="ic"><svg width="26" height="26"><use href="#i-building"/></svg></div><h3>Empresas</h3><p>Videovigilancia analítica de instalaciones y control de accesos.</p></div>
+   <div class="card sector" data-reveal><div class="ic"><svg width="26" height="26"><use href="#i-school"/></svg></div><h3>Instituciones</h3><p>Seguridad en colegios y sedes con alta densidad de usuarios.</p></div>
+   <div class="card sector" data-reveal><div class="ic"><svg width="26" height="26"><use href="#i-home"/></svg></div><h3>Viviendas</h3><p>Conexiones domésticas y conjuntos residenciales en San Cristóbal.</p></div>
+  </div>
+  <p class="quote" style="margin-top:34px" data-reveal>“Conectamos la infraestructura física con la potencia analítica del futuro.”</p>
+ </div></section>
+</div>
+
+<!-- ================= TEORÍA ================= -->
+<div class="page" id="page-teoria">
+ <section class="s-head"><div class="wrap" style="padding-bottom:32px"><h1>Teoría</h1><p>Los conceptos que sostienen el proyecto, del cable a la red neuronal. Cada uno tiene su simulación en la pestaña Simulación.</p></div></section>
+ <div class="wrap">
+  <section class="th-sec"><div class="th-grid">
+   <div><h2>El modelo OSI</h2><p>Divide la comunicación en 7 capas. Al enviar, cada capa agrega su cabecera (encapsulación); al recibir, cada capa la quita (desencapsulación). Un switch trabaja hasta la capa 2 y un router hasta la capa 3.</p><p>En este proyecto, el video anotado por YOLO baja por las 7 capas del servidor, viaja como bits por el cable y sube por las 7 capas del cliente.</p><a class="btn sm" href="#simulacion-osi">Ver la encapsulación animada</a></div>
+   <div class="tbl"><table class="osi-t"><thead><tr><th>Capa</th><th>PDU</th><th>En el proyecto</th></tr></thead><tbody>
+    <tr><td><i class="lay" style="background:var(--l7)"></i>7 Aplicación</td><td>Datos</td><td>RTSP / RTP, VLC, MediaMTX</td></tr>
+    <tr><td><i class="lay" style="background:var(--l6)"></i>6 Presentación</td><td>Datos</td><td>Códec H.264, formato NAL</td></tr>
+    <tr><td><i class="lay" style="background:var(--l5)"></i>5 Sesión</td><td>Datos</td><td>Sesión RTSP (SETUP, PLAY), RTCP</td></tr>
+    <tr><td><i class="lay" style="background:var(--l4)"></i>4 Transporte</td><td>Datagrama</td><td>UDP 8000 → 49152</td></tr>
+    <tr><td><i class="lay" style="background:var(--l3)"></i>3 Red</td><td>Paquete</td><td>IPv4, DSCP AF41, TTL, router</td></tr>
+    <tr><td><i class="lay" style="background:var(--l2)"></i>2 Enlace</td><td>Trama</td><td>Ethernet II, 802.1Q, MAC, switch</td></tr>
+    <tr><td><i class="lay" style="background:var(--l1)"></i>1 Física</td><td>Bits</td><td>UTP Cat 6, 100BASE-TX, MLT-3</td></tr>
+   </tbody></table></div>
+  </div></section>
+  <section class="th-sec"><div class="th-grid">
+   <div><h2>VLAN y troncal 802.1Q</h2><p>Una VLAN divide un switch físico en varios switches lógicos: un equipo de la VLAN 10 no recibe el broadcast de la VLAN 20. Los puertos de acceso pertenecen a una sola VLAN; el puerto troncal lleva varias e identifica cada trama con una etiqueta de 4 bytes.</p><p>La etiqueta incluye 3 bits de prioridad (PCP o CoS) y 12 bits de identificador de VLAN, hasta 4094 VLAN.</p></div>
+   <div><div class="frame"><span style="background:var(--l2)">MAC destino<small>6 B</small></span><span style="background:var(--l2)">MAC origen<small>6 B</small></span><span style="background:#0d5f2c">802.1Q<small>TPID 0x8100 · PCP · VID</small></span><span style="background:var(--l2)">Tipo<small>0x0800</small></span><span style="background:var(--l3)">Paquete IP<small>46–1500 B</small></span><span style="background:var(--l2)">FCS<small>CRC-32</small></span></div><p class="muted" style="margin-top:10px;font-size:14px">Trama Ethernet con etiqueta 802.1Q, tal como viaja por la troncal Gi0/1 entre el switch y el router.</p></div>
+  </div></section>
+  <section class="th-sec"><div class="th-grid">
+   <div><h2>Router-on-a-stick y NAT</h2><p>Un solo puerto físico del router (G0/0) se divide en subinterfaces, una por VLAN: G0/0.10 es la puerta de enlace 192.168.10.1 y G0/0.20 es 192.168.20.1. El tráfico entre VLAN sube por la troncal, el router lo enruta, baja el TTL en 1 y lo devuelve con la etiqueta de la otra VLAN.</p><p>Para salir a Internet, NAT con sobrecarga (PAT) traduce las direcciones privadas a la pública del router usando puertos distintos.</p></div>
+   <pre class="cmd">interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+interface GigabitEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ip nat inside source list 1 interface G0/1 overload</pre>
+  </div></section>
+  <section class="th-sec"><div class="th-grid">
+   <div><h2>QoS y DSCP</h2><p>Cuando el enlace se llena, los paquetes esperan en la cola de salida del router. Sin QoS, todos esperan igual y los últimos se descartan (tail drop). Con QoS, el router clasifica por el campo DSCP de la cabecera IP y reserva ancho de banda para cada clase.</p><p>AF41 vale 34 (binario 100010): clase 4, baja probabilidad de descarte, la marca recomendada para video interactivo. En el byte ToS se escribe 0x88.</p></div>
+   <div><div class="fx">DSCP AF41 = 100 010 = 34<br>ToS = DSCP × 4 = 136 = 0x88<br>CBWFQ: class VIDEO → bandwidth percent 40<br>LLQ: class VIDEO → priority percent 40</div><p class="muted" style="margin-top:10px;font-size:14px">CBWFQ garantiza una porción del enlace; LLQ da prioridad estricta con un límite (policía) para no ahogar al resto.</p></div>
+  </div></section>
+  <section class="th-sec"><div class="th-grid">
+   <div><h2>Cuánto pesa el video</h2><p>Un video sin comprimir a 720p y 30 FPS ocupa 663 Mbps. El códec quita la redundancia: H.264 deja unos 0,07 bits por píxel. Los cuadros I se codifican completos y los P solo guardan los cambios, por eso un error en un P se arrastra hasta el siguiente I.</p></div>
+   <div><div class="fx">bitrate ≈ ancho × alto × FPS × bits_por_píxel<br>1280 × 720 × 30 × 0,07 ≈ 1,94 Mbps</div><div class="tbl" style="margin-top:12px"><table><thead><tr><th>Resolución</th><th class="n">Píxeles</th><th class="n">H.264 a 30 FPS</th></tr></thead><tbody><tr><td>854 × 480</td><td class="n">409 920</td><td class="n">0,9 Mbps</td></tr><tr><td>1280 × 720</td><td class="n">921 600</td><td class="n">1,9 Mbps</td></tr><tr><td>1920 × 1080</td><td class="n">2 073 600</td><td class="n">4,4 Mbps</td></tr></tbody></table></div></div>
+  </div></section>
+  <section class="th-sec"><div class="th-grid">
+   <div><h2>Cómo detecta YOLOv8</h2><p>YOLO (“solo miras una vez”) analiza la imagen completa en una sola pasada de la red neuronal. La imagen se lleva a 640 × 640; el backbone extrae rasgos, el neck los combina en tres escalas y la cabeza predice en cada celda una caja y la probabilidad de 80 clases.</p><p>Salen 8400 predicciones (80² + 40² + 20²). Se descartan las de baja confianza y la supresión de no máximos (NMS) elimina las cajas repetidas sobre el mismo objeto.</p><a class="btn sm" href="#simulacion-yolo">Ver YOLO por dentro</a></div>
+   <div><div class="fx">IoU(A, B) = área(A ∩ B) / área(A ∪ B)<br>NMS: ordenar por confianza → tomar la mejor →<br>     borrar las que tengan IoU &gt; 0,45 → repetir</div><p class="muted" style="margin-top:10px;font-size:14px">YOLOv8n: 3,2 millones de parámetros, 8,7 GFLOPs, 37,3 mAP50-95 en COCO (datos de Ultralytics).</p></div>
+  </div></section>
+  <section class="th-sec" style="border:0"><div class="th-grid">
+   <div><h2>La latencia de extremo a extremo</h2><p>Es el tiempo desde que algo ocurre frente a la cámara hasta que aparece en la pantalla del cliente. Se suma en cada etapa; la cola del router es la única parte que crece con la congestión y la que QoS controla.</p></div>
+   <div class="fx">L = captura + inferencia + codificación<br>  + serialización + cola del router<br>  + búfer del reproductor + decodificación</div>
+  </div></section>
+ </div>
+</div>
+
+<!-- ================= SIMULACIÓN ================= -->
+<div class="page" id="page-simulacion">
+ <section class="s-head"><div class="wrap">
+  <h1>Simulación</h1>
+  <p>Cinco laboratorios para ver por dentro el sistema: la red paquete por paquete, la encapsulación OSI con bytes reales, el servidor y YOLO por dentro, un detector de personas real en el navegador y una guía con autoevaluación.</p>
+  <div class="stabs" role="tablist">
+   <a href="#simulacion-red" data-t="red"><i>01</i>Red paquete a paquete</a>
+   <a href="#simulacion-osi" data-t="osi"><i>02</i>Modelo OSI</a>
+   <a href="#simulacion-yolo" data-t="yolo"><i>03</i>Servidor y YOLO por dentro</a>
+   <a href="#simulacion-detector" data-t="detector"><i>04</i>Detector de personas</a>
+   <a href="#simulacion-guia" data-t="guia"><i>05</i>Guía y quiz</a>
+  </div>
+ </div></section>
+
+ <div class="spane" id="t-red"><div class="wrap redsim">
+<p class="muted" style="margin:0 0 16px;max-width:80ch">Simulación de eventos discretos: cada paquete RTP, iperf3 o TCP se serializa a la velocidad real del puerto, hace cola en el router y puede descartarse. Cambie la configuración y observe la latencia, la pérdida y lo que ve el cliente.</p>
+
+<section class="card" aria-labelledby="h-ctl">
+<h2 id="h-ctl">Configuración</h2>
+<div class="ctl-grid">
+ <div class="grp">Video (bloques 1 a 6, servidor)</div>
+ <label class="c">Resolución<select id="res"><option value="854x480">854×480</option><option value="1280x720" selected>1280×720</option><option value="1920x1080">1920×1080</option></select></label>
+ <label class="c">FPS de captura<select id="fps"><option>15</option><option selected>30</option></select></label>
+ <label class="c">Códec<select id="codec"><option value="h264" selected>H.264</option><option value="h265">H.265</option><option value="mjpeg">MJPEG</option></select></label>
+ <label class="c">Transporte<select id="tr"><option value="udp" selected>RTP/UDP · MediaMTX</option><option value="tcp">HTTP/TCP · Flask</option></select></label>
+ <label class="c">Inferencia YOLOv8n<select id="hw"><option value="cpu" selected>CPU (~46 ms)</option><option value="gpu">GPU (~9 ms)</option></select></label>
+ <div class="grp">Red (bloques 7 y 8, switch y router)</div>
+ <label class="c">Enlace del router hacia VLAN 20<select id="link"><option value="5">5 Mbps</option><option value="10">10 Mbps</option><option value="20" selected>20 Mbps</option><option value="50">50 Mbps</option><option value="100">100 Mbps</option></select></label>
+ <label class="c">QoS en G0/0.20<select id="qos"><option value="fifo">FIFO (sin QoS)</option><option value="cbwfq" selected>CBWFQ AF41</option><option value="llq">LLQ AF41</option></select></label>
+ <label class="c"><span>Ancho de banda clase VIDEO: <b id="vpctv">40</b> %</span><input type="range" id="vpct" min="10" max="90" step="5" value="40"></label>
+ <label class="c">Cola class-default (queue-limit)<select id="qlim"><option>16</option><option>40</option><option selected>64</option><option>128</option><option>256</option></select></label>
+ <label class="chk"><input type="checkbox" id="mls" checked>Switch con mls qos (re-marca puertos no confiables)</label>
+ <label class="c">Falla para diagnosticar<select id="fault"><option value="none" selected>Ninguna</option><option value="client_vlan">Fa0/2 en VLAN 10</option><option value="trunk_no20">Troncal sin VLAN 20</option><option value="sub20_down">G0/0.20 apagada</option><option value="acl_block">ACL bloquea RTP</option></select></label>
+ <div class="grp">Tráfico de otros equipos</div>
+ <label class="c"><span>iperf3 UDP 10.11 → 20.11: <b id="iperfv">8</b> Mbps</span><input type="range" id="iperf" min="0" max="60" step="1" value="8"></label>
+ <label class="c"><span>Descargas TCP por NAT: <b id="tcpnv">1</b></span><input type="range" id="tcpn" min="0" max="6" step="1" value="1"></label>
+ <label class="chk"><input type="checkbox" id="ipaf">iperf3 marca AF41 (--tos 136)</label>
+ <div class="grp">Cliente (bloque 9) y simulación</div>
+ <label class="c"><span>Búfer VLC network-caching: <b id="cachev">300</b> ms</span><input type="range" id="cache" min="0" max="1500" step="50" value="300"></label>
+ <label class="c">Velocidad<select id="speed"><option value="0.05">0,05× lenta</option><option value="0.25">0,25×</option><option value="0.5">0,5×</option><option value="1" selected>1× real</option><option value="2">2×</option></select></label>
+ <div class="row" style="align-items:end"><button id="pause" type="button">Pausar</button><button id="reset" type="button" class="ghost">Reiniciar contadores</button></div>
+</div>
+<p class="formula mono" id="formula"></p>
+</section>
+
+<section class="card" aria-labelledby="h-net">
+<h2 id="h-net">Bloques 7 y 8 · Servidor → switch → router → cliente</h2>
+<div class="fig" id="topo"><canvas id="ctopo" aria-label="Topología de red con paquetes en movimiento"></canvas></div>
+<div class="legend"><span><i style="background:var(--vid)"></i>video (RTP o HTTP)</span><span><i style="background:var(--oth)"></i>iperf3 UDP</span><span><i style="background:var(--tcp)"></i>descargas TCP (NAT)</span><span><i style="background:var(--bad)"></i>descartado</span><span>Animación: una muestra de los paquetes reales; pulse un equipo para abrir su consola.</span></div>
+<div class="queues" id="queues"></div>
+<div class="drops" id="drops"></div>
+<div class="kpis" id="kpis"></div>
+</section>
+
+<section class="two">
+ <div class="card"><h3>Bloques 1 a 6 · Salida anotada del servidor</h3><div class="vid"><canvas id="vsrv"></canvas></div><div class="cap mono" id="capsrv"></div></div>
+ <div class="card"><h3>Bloque 9 · Lo que ve el cliente en VLC</h3><div class="vid"><canvas id="vcli"></canvas></div><div class="cap mono" id="capcli"></div><button id="replay" type="button" class="ghost">Reiniciar reproductor</button></div>
+</section>
+
+<section class="two">
+ <div class="card"><h3>Latencia cámara → pantalla y cola del router</h3><div class="legend"><span><i style="background:var(--vid)"></i>latencia por cuadro (ms)</span><span><i style="background:var(--teal)"></i>espera en la cola G0/0.20 (ms)</span></div><div class="fig chart"><canvas id="ch1"></canvas></div></div>
+ <div class="card"><h3>Salida G0/0.20 por tipo de tráfico</h3><div class="legend"><span><i style="background:var(--vid)"></i>video</span><span><i style="background:var(--oth)"></i>iperf3</span><span><i style="background:var(--tcp)"></i>TCP</span><span>línea: capacidad del enlace</span></div><div class="fig chart"><canvas id="ch2"></canvas></div></div>
+</section>
+
+<section class="two">
+ <div class="card">
+  <h3>Captura tipo Wireshark</h3>
+  <div class="row"><label class="c" style="flex-direction:row;align-items:center;gap:8px">Puerto espejo (SPAN)<select id="tap"><option value="fa2" selected>Fa0/2 · cliente</option><option value="trunk">Gi0/1 · troncal</option><option value="fa1">Fa0/1 · servidor</option></select></label><button id="capbtn" type="button" class="ghost">Detener captura</button></div>
+  <div class="tbl" style="margin-top:8px"><table><thead><tr><th class="n">No.</th><th class="n">Tiempo</th><th>Origen</th><th>Destino</th><th>Proto</th><th class="n">Long.</th><th>Info</th></tr></thead><tbody id="captbl"></tbody></table></div>
+  <pre id="insp" class="mono">Pulse una fila para ver las cabeceras del paquete en ese punto de la red.</pre>
+ </div>
+ <div class="card">
+  <h3>Consola de los equipos</h3>
+  <div class="tabs" id="devtabs"></div>
+  <div class="term"><pre id="tout"></pre><form id="tform" autocomplete="off"><span class="pr" id="tprompt"></span><input type="text" id="tin" aria-label="Comando" spellcheck="false"></form></div>
+  <p class="hint">Pruebe: <code>show policy-map interface</code>, <code>show interfaces trunk</code>, <code>ping 192.168.10.10</code>, <code>iperf3 -c 192.168.20.11 -u -b 15M</code>. Escriba <code>?</code> para ver la lista.</p>
+ </div>
+</section>
+
+<section class="card" aria-labelledby="h-exp">
+<h2 id="h-exp">Experimentos A a D</h2>
+<p class="hint">Cada corrida aplica una configuración, espera 3 s de estabilización y mide 8 s de tiempo simulado. Cambia una sola cosa a la vez, como pide la guía.</p>
+<div class="row"><button type="button" data-exp="A">A · Resolución</button><button type="button" data-exp="B">B · FPS</button><button type="button" data-exp="C">C · Tráfico iperf3</button><button type="button" data-exp="D">D · QoS con red llena</button><button type="button" id="exnow" class="ghost">Medir configuración actual</button><button type="button" id="excopy" class="ghost">Copiar CSV</button><button type="button" id="exclear" class="ghost">Borrar</button><span class="status" id="exstat"></span></div>
+<div class="tbl" style="margin-top:10px"><table><thead><tr><th>Exp.</th><th>Configuración</th><th class="n">Bitrate video</th><th class="n">Uso enlace</th><th class="n">Pérdida video</th><th class="n">Latencia media</th><th class="n">p95</th><th class="n">Jitter</th><th class="n">FPS cliente</th><th class="n">Cola</th></tr></thead><tbody id="exres"><tr><td colspan="10" class="hint">Sin mediciones todavía. Los valores son simulados: compárelos con los que midan en el laboratorio.</td></tr></tbody></table></div>
+<textarea id="csvbox" class="mono" style="display:none;width:100%;height:120px;margin-top:8px" readonly></textarea>
+</section>
+
+<section class="card">
+<details><summary>Qué modela la simulación y qué supuestos usa</summary>
+<ul>
+<li>Peso del video: ancho × alto × bits por píxel (H.264 0,07 · H.265 0,045 · MJPEG 0,6) por cuadro, con GOP de 1 s y cuadros I unas 5 veces más grandes que los P. Se empaqueta en RTP de 1400 B + 58 B de cabeceras RTP/UDP/IP/Ethernet, o en segmentos TCP de 1448 B.</li>
+<li>Servidor: YOLOv8n en CPU tarda unos 46 ms por cuadro, así que a 30 FPS procesa unos 21 cuadros por segundo; los demás se descartan antes de codificar.</li>
+<li>Cada puerto serializa a su velocidad real (Fa 100 Mbps, troncal 1 Gbps, ISP 100 Mbps) contando preámbulo, IFG y la etiqueta 802.1Q de 4 B en la troncal.</li>
+<li>Router: la salida de G0/0.20 está limitada con <code>shape average</code> al valor de "Enlace del router". FIFO usa tail drop; CBWFQ reparte con Deficit Round Robin según el porcentaje; LLQ da prioridad estricta con un policía de 200 ms de ráfaga.</li>
+<li>El switch con <code>mls qos</code> re-marca a DSCP 0 lo que entra por puertos sin <code>mls qos trust dscp</code>; solo Fa0/1 (servidor) es de confianza.</li>
+<li>TCP: arranque lento, AIMD y retransmisión al detectar la pérdida un RTT después. Las descargas tienen 15 a 35 ms de RTT hacia Internet.</li>
+<li>Cliente: VLC reproduce cada cuadro en captura + retardo del primer cuadro + network-caching. Con UDP, un cuadro incompleto o tardío se ve dañado hasta el siguiente cuadro I. Con TCP no hay pérdida, pero el reproductor se detiene y el retardo crece.</li>
+<li>La latencia cámara → pantalla suma exposición, inferencia, codificación, red, búfer, decodificación y pantalla (unos 12 ms).</li>
+</ul></details>
+</section>
+
+ </div></div>
+
+ <div class="spane" id="t-osi"><div class="wrap">
+  <div class="card">
+   <div class="ctl" style="justify-content:space-between;margin-bottom:14px">
+    <div><h2 style="font-size:22px">Un paquete de video atraviesa las 7 capas</h2><p class="muted" style="margin:4px 0 0">Bytes reales de una trama RTP/UDP/IPv4/802.1Q con FCS calculado. El switch trabaja hasta la capa 2 y el router hasta la 3.</p></div>
+    <div class="ctl"><button class="btn sm" id="osiPlay" type="button">Pausar</button><button class="btn sm ghost" id="osiPrev" type="button">Anterior</button><button class="btn sm ghost" id="osiNext" type="button">Siguiente</button><button class="btn sm ghost" id="osiReset" type="button">Reiniciar</button>
+     <label>Velocidad<select id="osiSpeed"><option value="2600">Lenta</option><option value="1700" selected>Normal</option><option value="900">Rápida</option></select></label></div>
+   </div>
+   <div class="osi-wrap" id="osiWrap"><div class="osi" id="osiGrid"></div></div>
+   <div class="osi-step">
+    <div class="osi-msg"><div class="where" id="osiWhere"></div><h3 id="osiTitle"></h3><p id="osiText" class="muted"></p>
+     <div class="pdu-name" id="osiPduName"></div><div class="pdu" id="osiPdu"></div>
+     <div class="wave" id="waveBox"><canvas id="osiWave"></canvas></div>
+     <div class="ctl" style="margin-top:8px"><label>Codificación de línea<select id="osiCode"><option value="mlt3">100BASE-TX: 4B/5B + MLT-3</option><option value="manch">10BASE-T: Manchester</option><option value="nrz">NRZ (didáctico)</option><option value="pam5">1000BASE-T: PAM-5 (ilustrativo)</option></select></label></div>
+    </div>
+    <div><div class="hex" id="osiHex"></div><div class="fields tbl" style="margin-top:10px"><table><thead><tr><th>Campo</th><th>Valor</th><th class="n">Bytes</th></tr></thead><tbody id="osiFields"></tbody></table></div></div>
+   </div>
+  </div>
+ </div></div>
+
+ <div class="spane" id="t-yolo"><div class="wrap">
+  <div class="yolo">
+   <div>
+    <div class="ycan"><canvas id="yCv"></canvas></div>
+    <div class="ctl" style="margin-top:12px">
+     <button class="btn sm" id="yPlay" type="button">Pausar</button><button class="btn sm ghost" id="yPrev" type="button">Anterior</button><button class="btn sm ghost" id="yNext" type="button">Siguiente</button>
+     <label>Confianza <input type="range" id="yConf" min="0.05" max="0.9" step="0.05" value="0.25" style="width:120px"><b class="mono" id="yConfV">0,25</b></label>
+     <label>IoU NMS <input type="range" id="yIou" min="0.2" max="0.9" step="0.05" value="0.45" style="width:120px"><b class="mono" id="yIouV">0,45</b></label>
+     <label>Escala <select id="yScale"><option value="80">P3 · 80×80</option><option value="40" selected>P4 · 40×40</option><option value="20">P5 · 20×20</option></select></label>
+    </div>
+   </div>
+   <div class="card yinfo"><div class="ystages" id="yStages"></div></div>
+  </div>
+  <div class="card" style="margin-top:18px"><div id="yInfo" class="yinfo"></div></div>
+  <div class="grid2" style="margin-top:18px">
+   <div class="card"><div class="ctl" style="justify-content:space-between"><h3 style="font-size:18px">Línea de tiempo del servidor por cuadro</h3><label>Hardware<select id="yHw"><option value="cpu" selected>CPU portátil</option><option value="gpu">GPU</option></select></label></div><div class="gantt" style="margin-top:10px"><canvas id="yGantt"></canvas></div><p class="muted" style="font-size:13.5px;margin:8px 0 0">Cada fila es un cuadro capturado a 30 FPS. Rayado: el servidor estaba ocupado y el cuadro se descartó antes de la inferencia.</p></div>
+   <div class="card"><h3 style="font-size:18px;margin-bottom:12px">Recursos del servidor</h3><div class="meters" id="yMeters"></div><p class="muted" style="font-size:13.5px;margin:12px 0 0">Valores modelados para un portátil de 4 núcleos con <code>ultralytics</code> en PyTorch; sirven para comparar, no son una medición.</p></div>
+  </div>
+ </div></div>
+
+ <div class="spane" id="t-detector"><div class="wrap">
+  <div class="det">
+   <div>
+    <div class="dstage" id="dStage"><div class="ph" id="dPh">Cargue el modelo YOLOv8 y elija una imagen, un video o la cámara. La detección corre en su navegador: ninguna imagen sale del equipo.</div><canvas id="dCv" hidden></canvas></div>
+    <div class="ctl" style="margin-top:12px">
+     <button class="btn sm" id="dCam" type="button">Usar la cámara</button>
+     <label class="btn sm ghost" style="color:var(--brand)">Imagen o video<input type="file" id="dFile" accept="image/*,video/*" hidden></label>
+     <button class="btn sm ghost" id="dStop" type="button" disabled>Detener</button>
+     <label>Confianza <input type="range" id="dConf" min="0.1" max="0.9" step="0.05" value="0.35" style="width:110px"><b class="mono" id="dConfV">0,35</b></label>
+     <label>IoU <input type="range" id="dIou" min="0.2" max="0.9" step="0.05" value="0.45" style="width:110px"><b class="mono" id="dIouV">0,45</b></label>
+     <label><input type="checkbox" id="dOnly" checked>Solo personas</label>
+    </div>
+   </div>
+   <div class="card">
+    <div class="dstatus" id="dStatus"><i></i><span>Modelo sin cargar</span></div>
+    <div class="dk"><div><span>Personas</span><b id="dCount">0</b></div><div><span>Inferencia</span><b id="dMs">—</b></div><div><span>FPS</span><b id="dFps">—</b></div><div><span>Backend</span><b id="dBk" style="font-size:18px">—</b></div></div>
+    <h3 style="font-size:17px;margin:6px 0 6px">Cargar el modelo</h3>
+    <p class="muted" style="font-size:14.5px">La página busca <code>modelos/yolov8n_web_model/model.json</code> junto al sitio. Si no lo encuentra, elija aquí el archivo <code>yolov8n_web_model.zip</code> tal cual, o <code>model.json</code> junto con todos los <code>.bin</code>.</p>
+    <div class="drop" id="dDrop"><label class="btn sm">Elegir archivos del modelo<input type="file" id="dModel" multiple accept=".zip,.json,.bin" hidden></label><div style="margin-top:6px">o arrástrelos aquí</div></div>
+    <details style="margin-top:12px"><summary>Cómo exportar YOLOv8n para la web</summary>
+     <pre class="cmd">pip install ultralytics
+yolo export model=yolov8n.pt format=tfjs</pre>
+     <p class="muted" style="font-size:14px">Se crea la carpeta <code>yolov8n_web_model</code>. Súbala al repositorio dentro de <code>modelos/</code> para que GitHub Pages la cargue sola. La cámara funciona en GitHub Pages (HTTPS); en algunas vistas previas el navegador la bloquea: use una imagen o un video.</p>
+    </details>
+    <details style="margin-top:8px"><summary>Qué hace el código</summary><ol class="ul" style="font-size:14px;margin-top:8px"><li>Rellena la imagen a un cuadrado y la lleva a 640 × 640 (letterbox).</li><li>Normaliza los píxeles a 0–1 y ejecuta la red con TensorFlow.js (WebGL).</li><li>Lee la salida 1 × 84 × 8400: 4 coordenadas y 80 clases por predicción.</li><li>Filtra la clase 0 (persona) por confianza y aplica NMS.</li><li>Devuelve las cajas a la escala original y las dibuja.</li></ol></details>
+   </div>
+  </div>
+ </div></div>
+
+ <div class="spane" id="t-guia"><div class="wrap">
+  <div class="grid2">
+   <div class="card"><h3 style="font-size:19px;margin-bottom:10px">Calculadora de bitrate</h3>
+    <div class="ctl"><label>Resolución<select id="gRes"><option value="854x480">854×480</option><option value="1280x720" selected>1280×720</option><option value="1920x1080">1920×1080</option></select></label><label>FPS<select id="gFps"><option>15</option><option selected>30</option><option>60</option></select></label><label>Códec<select id="gCod"><option value="0.07">H.264</option><option value="0.045">H.265</option><option value="0.6">MJPEG</option></select></label></div>
+    <div class="ynum" style="margin-top:14px"><div><span>Píxeles por segundo</span><b id="gPx">—</b></div><div><span>Bitrate estimado</span><b id="gBr">—</b></div><div><span>Paquetes RTP/s</span><b id="gPk">—</b></div></div>
+    <p class="muted" style="font-size:14px;margin:0">Bits por píxel: H.264 0,07 · H.265 0,045 · MJPEG 0,6. Sin comprimir serían <b id="gRaw">—</b>.</p>
+   </div>
+   <div class="card"><div class="ctl" style="justify-content:space-between;margin-bottom:10px"><h3 style="font-size:19px">Colas con prioridad</h3><div class="ctl"><label>Planificador<select id="qSch"><option value="sp">Prioridad estricta</option><option value="wrr" selected>WRR 5:3:2</option><option value="fifo">FIFO (sin QoS)</option></select></label><button class="btn sm" id="qCong" type="button">Congestionar</button></div></div>
+    <div id="qRows"></div><p class="muted" style="font-size:14px;margin:4px 0 0" id="qMsg"></p></div>
+  </div>
+  <div class="card" style="margin-top:18px"><h3 style="font-size:19px;margin-bottom:12px">Ponga a prueba lo aprendido</h3><div class="grid2" id="quiz"></div><p style="margin:14px 0 0;font-weight:700" id="quizScore"></p></div>
+ </div></div>
+</div>
+</main>
+
+<footer>
+ <div class="wrap">
+  <div><div class="brand" style="margin-bottom:10px"><svg width="32" height="32" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="9" fill="#0f52ba"/><path d="M20 6 11 20h7l-2 10 9-14h-7z" fill="#ffb366"/></svg>FlashGuard SENA</div><p>Infraestructura de red y analítica de video con IA. Proyecto productivo SENA · Fontibón, Bogotá D.C.</p></div>
+  <div><h4>Contacto</h4><ul><li>contacto@flashguardsena.com</li><li>+57 300 123 4567</li><li>Fontibón y Bogotá D.C., Colombia</li></ul></div>
+  <div><h4>Navegación</h4><ul><li><a href="#inicio">Inicio</a></li><li><a href="#pitch">Pitch</a></li><li><a href="#teoria">Teoría</a></li><li><a href="#simulacion">Simulación</a></li></ul></div>
+  <div class="bottom"><span>© 2026 FlashGuard SENA</span><span>Simulaciones con fines educativos: compare con mediciones reales.</span></div>
+ </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script src="js/pitch.js"></script>
+<script src="js/red.js"></script>
+<script src="js/osi.js"></script>
+<script src="js/yolo.js"></script>
+<script src="js/detector.js"></script>
+<script src="js/guia.js"></script>
+</body>
+</html>
